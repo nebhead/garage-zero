@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>Garage Door App</title>
+
+  <!-- Bootstrap -->
+  <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+  <!-- Bootstrap theme -->
+  <link href="{{ url_for('static', filename='css/bootstrap-theme.min.css') }}" rel="stylesheet">
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+  <!-- WebApp Manifest -->
+  <link rel="manifest" href="{{ url_for('manifest') }}">
+
+  <!-- Favicon -->
+  <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon" type="image/x-icon" />
+
+</head>
+
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#funtime">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-home"></span> Garage Zero</a>
+      </div>
+      <div id="funtime" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+          <li><a href="/history"><span class="glyphicon glyphicon-list-alt"></span> History</a></li>
+          <li><a href="/admin"><span class="glyphicon glyphicon-cog"></span> Admin</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <br>
+  <br>
+  <br>
+
+  <div class="container theme-showcase" role="main">
+
+  <!-- Success -->
+  {% if (action == "settings") %}
+    <div class="alert alert-success" role="alert">
+      <span class="glyphicon glyphicon-ok"></span>
+      <b> Settings Updated.</b>
+    </div>
+  {% endif %}
+
+  <!-- Settings Panel -->
+  <form name="input_settings" action="/admin/settings" method="POST">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">Notification Settings</h3>
+      </div>
+      <div class="panel-body">
+
+        <i>You can optionally get an e-mail notification if the door is open for a certain amount of time.  Just fill in the e-mail account infomration here, and the specified timeout in minutes after which you'll get an e-mail letting you know your garage door is open.</i>
+        <br><br>
+        <!-- From E-mail Entry -->
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-export"></i> FROM E-mail: </span>
+          <input id="from_email" type="text" class="form-control" name="from_email" placeholder="{{settings['email']['FromEmail']}}">
+        </div>
+        <h6><b>Note:</b><i>Used for server login.</i></h6>
+				<h6><b>Note:</b><i>Leaving "from" e-mail blank disables e-mail notifications</i></h6>
+
+        <!-- To E-mail Entry -->
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-import"></i> TO E-mail: </span>
+          <input id="to_email" type="text" class="form-control" name="to_email" placeholder="{{settings['email']['ToEmail']}}">
+        </div>
+        <br>
+
+        <!-- SMTP Server -->
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i> SMTP Server: </span>
+          <input id="server" type="text" class="form-control" name="server" placeholder="{{settings['email']['SMTPServer']}}">
+        </div>
+        <br>
+
+        <!-- SMTP Port -->
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-resize-small"></i> SMTP Port: </span>
+          <input id="port" type="number" class="form-control" name="port" placeholder="{{settings['email']['SMTPPort']}}">
+        </div>
+        <br>
+
+        <!-- Password Entry -->
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i> Password: </span>
+          <input id="password" type="password" class="form-control" name="password" placeholder="********">
+        </div>
+        <br>
+
+        <!-- Notification Timeout -->
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-hourglass"></i> Notify Timeout(mins): </span>
+          <input id="timeout" type="number" min="0" max= "120" class="form-control" name="timeout" placeholder="{{settings['notification']['minutes']}}">
+        </div>
+        <h6><b>Note:</b><i>Timeout of zero (0) disables notifications</i></h6>
+
+				<!-- IFTTT API Key -->
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i> IFTTT API Key: </span>
+          <input id="iftttapi" type="text" class="form-control" name="iftttapi" placeholder="{{settings['ifttt']['APIKey']}}">
+        </div>
+        <h6><b>Note:</b><i>Use IFTTT Notificaiton App.  Set to 0 to disable.</i></h6>
+
+				<!-- Notify on Open -->
+				<div class="checkbox">
+					{% if settings['ifttt']['notify_on_open'] == "on" %}
+						<label><input type="checkbox" id="notify_on_open" name="notify_on_open" checked>Notify on Door Open</label>
+					{% else %}
+						<label><input type="checkbox" id="notify_on_open" name="notify_on_open" unchecked>Notify on Door Open</label>
+					{% endif %}
+				</div>
+				<h6><b>Note:</b><i>IFTTT Notification on Door Open.</i></h6>
+
+      </div>
+      <div class="panel-footer">
+        <button type="submit" class="btn btn-default">Save Changes</button>
+      </div>
+
+    </div>
+
+  </form>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">System Info</h3>
+      </div>
+      <div class="panel-body">
+        <b>Raspberry Pi Zero</b><br>
+        {% for line in cpuinfo %}
+          {{ line }}<br>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">Uptime</h3>
+      </div>
+      <div class="panel-body">{{ uptime }}</div>
+    </div>
+
+    <div class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"> Administration Functions</h3>
+      </div>
+      <div class="panel-body">
+
+        <!-- Reboot -->
+        <form name="input" action="/admin/reboot">
+          <button type="button" class="btn btn-lg btn-warning" data-toggle="modal" data-target="#myModal_reboot">Reboot</button>
+          <!-- Trigger the modal with a button -->
+
+          <!-- Modal -->
+          <div id="myModal_reboot" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title"><span style="font-size:1.25em;" class="glyphicon glyphicon-warning-sign"></span> Reboot System Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure you would like to reboot?
+                  <br><i>This may leave the system unresponsive for a few minutes.</i></p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-danger btn-ok">Confirm Reboot</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </form>
+
+        <br><br>
+        <!-- Shutdown -->
+        <form name="input" action="/admin/shutdown">
+          <button type="button" class="btn btn-lg btn-danger" data-toggle="modal" data-target="#myModal_shutdown">Shutdown</button>
+          <!-- Trigger the modal with a button -->
+
+          <!-- Modal -->
+          <div id="myModal_shutdown" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title"><span style="font-size:1.25em;" class="glyphicon glyphicon-warning-sign"></span> Shutdown System Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure you would like to shutdown the system?
+                  <br><i>This will halt the system and shutdown.  It will require a manual restart with the power-button.</i></p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-danger btn-ok">Confirm Shutdown</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+      <!-- *********** Credits *************** -->
+      <div class="panel-group">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h6 class="panel-title">
+              <a data-toggle="collapse" href="#collapse-new">
+                <span class="glyphicon glyphicon-bullhorn"></span> Credits and Licenses...
+                <span class="glyphicon glyphicon-plus-sign pull-right"></span>
+              </a>
+            </h6>
+          </div>
+          <div id="collapse-new" class="panel-collapse collapse">
+            <div class="panel-body">
+              <i>Of course, none of this project would be available without the wonderful and amazing folks below... </i><br>
+              <ul class="list-group">
+                <li class="list-group-item">Bootstrap - Based entirely on Bootstrap and JQuery.  Bootstrap is released under the MIT license and is copyright 2016 Twitter. (<a href="http://getbootstrap.com" target="blank">Bootstrap</a>)</li>
+                <li class="list-group-item">Glyphicons - Created by Jan Kovařík over at GLYPHICONS. (<a href="http://glyphicons.com" target="blank">http://glypicons.com</a>)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="well">
+        <p style="color:grey">Garage Door Web Application created by <a href="http://parmeter.net/tech">Ben Parmeter</a>, copyright 2017.</p>
+        <p style="color:grey">For administration tasks, system information and licenses <a href="/admin">click here.</a></p>
+      </div>
+
+  </div>
+
+</body>
+</html>

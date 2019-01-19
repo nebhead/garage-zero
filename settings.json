@@ -1,0 +1,1 @@
+{"notification": {"minutes": 1}, "email": {"FromEmail": "", "Password": "", "SMTPServer": "smtp.gmail.com", "ToEmail": "", "SMTPPort": 587}, "ifttt": {"notify_on_open": "on", "APIKey": ""}}
