@@ -140,10 +140,10 @@ sudo raspi-config
 + Set timezone
 + Replace Hostname with a unique hostname ('i.e. garage-zero')
 
-#### Install Python PIP, Flask, Gunicorn, nginx
+#### Install Git, Python PIP, Flask, Gunicorn, nginx, and supervisord
 ```
 sudo apt update
-sudo apt install python-pip nginx git gunicorn -y
+sudo apt install python-pip nginx git gunicorn supervisor -y
 sudo pip install flask
 git clone https://github.com/nebhead/garage-zero
 ```
@@ -164,18 +164,47 @@ sudo ln -s /etc/nginx/sites-available/garage-zero /etc/nginx/sites-enabled
 sudo service nginx restart
 ```
 
-### Configure Crontab for boot
+### Setup Supervisor to Start GarageZero on Boot / Restart on Failures
+
+```
+# Copy configuration files (control.conf, webapp.conf) to supervisor config directory
+# NOTE: If you used a different directory for garage-zero then make sure you edit the *.conf files appropriately
+sudo cp *.conf /etc/supervisor/conf.d/
+
+# If supervisor isn't already running, startup Supervisor
+sudo service supervisor start
+
+# If supervisor is running already, just reload the config files
+sudo supervisorctl reread
+sudo supervisorctl update
+
+# Or just reboot and supervisord should kick everything off
+sudo reboot
+```
+Optionally, you can use supervisor's built in HTTP server to monitor the scripts.
+
+Inside of /etc/supervisord.conf, add this:
+
+```
+[inet_http_server]
+port = 9001
+username = user
+password = pass
+```
+If we access our server in a web browser at port 9001, we'll see the web interface that shows the status of the two scripts (WebApp and Control).  This gives you a quick and easy way to monitor whether any of the scripts has stopped functioning.  
+
+
+### Configure Crontab for Log Backups
 
 ```
 sudo crontab -l > mycron
-echo "@reboot cd /home/pi/garage-zero && sudo sh boot.sh &" >> mycron
 echo "0 0 1 * * cd /home/pi/garage-zero/logs && sh backup.sh" >> mycron
 sudo crontab mycron
 rm mycron
 ```
 
 ## Using GarageZero
-If you've configured the crontab correctly, GarageZero scripts should run upon a reboot.  Once the system is up and running, you should be able to access the WebUI via a browser on your smart phone, tablet or PC device.  
+If you've configured the supervisord correctly, GarageZero scripts should run upon a reboot.  Once the system is up and running, you should be able to access the WebUI via a browser on your smart phone, tablet or PC device.  
 
 Simply navigate to the IP address of your device for example (you can usually find the IP address of your device from looking at your router's configuration/status pages):
 
