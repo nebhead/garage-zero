@@ -143,6 +143,7 @@ sudo raspi-config
 #### Install Git, Python PIP, Flask, Gunicorn, nginx, and supervisord
 ```
 sudo apt update
+sudo apt upgrade
 sudo apt install python-pip nginx git gunicorn supervisor -y
 sudo pip install flask
 git clone https://github.com/nebhead/garage-zero
@@ -151,6 +152,9 @@ git clone https://github.com/nebhead/garage-zero
 ### Setup nginx to proxy to gunicorn
 
 ```
+# Move into garage-zero install directory
+cd ~/garage-zero
+
 # Delete default configuration
 sudo rm /etc/nginx/sites-enabled/default
 
@@ -167,6 +171,9 @@ sudo service nginx restart
 ### Setup Supervisor to Start GarageZero on Boot / Restart on Failures
 
 ```
+# Move into garage-zero install directory
+cd ~/garage-zero
+
 # Copy configuration files (control.conf, webapp.conf) to supervisor config directory
 # NOTE: If you used a different directory for garage-zero then make sure you edit the *.conf files appropriately
 sudo cp *.conf /etc/supervisor/conf.d/
@@ -183,7 +190,7 @@ sudo reboot
 ```
 Optionally, you can use supervisor's built in HTTP server to monitor the scripts.
 
-Inside of /etc/supervisord.conf, add this:
+Inside of /etc/supervisor/supervisord.conf, add this:
 
 ```
 [inet_http_server]
@@ -196,19 +203,25 @@ If we access our server in a web browser at port 9001, we'll see the web interfa
 
 ### Configure Crontab for Log Backups
 
+Configure crontab for the first time, to enable log backups on a monthly basis.
+
+Edit crontab by starting crontab in edit mode.
 ```
-sudo crontab -l > mycron
-echo "0 0 1 * * cd /home/pi/garage-zero/logs && sh backup.sh" >> mycron
-sudo crontab mycron
-rm mycron
+sudo crontab -e
 ```
+
+The first time this is run, it will ask you what editor you want to use.  I personally like to use nano, so I select this option.  
+
+Add the following line to the end of the file:
+```
+0 0 1 * * cd /home/pi/garage-zero/logs && sh backup.sh
+```
+Then press CTRL-O to write out to the file the CTRL-X to exit the program.  
 
 ## Using GarageZero
 If you've configured the supervisord correctly, GarageZero scripts should run upon a reboot.  Once the system is up and running, you should be able to access the WebUI via a browser on your smart phone, tablet or PC device.  
 
-Simply navigate to the IP address of your device for example (you can usually find the IP address of your device from looking at your router's configuration/status pages):
-
-http://192.168.1.42
+Simply navigate to the IP address of your device for example (you can usually find the IP address of your device from looking at your router's configuration/status pages). My router typically assigns IPs with prefixes of 192.168.1.XXX.  I'll use examples on my home network here, so you'll see URLs like: http://192.168.1.42  Yours may look different depending on your routers firmware/manufacturer (i.e. 10.10.0.XXX, etc.)
 
 **Note:** It's highly recommended to set a static IP for your Pi in your router's configuration.  This will vary from manufacturer to manufacturer and is not covered in this guide.  A static IP ensures that you will be able to access your device reliably, without having to check your router for a new IP every so often.   
 
