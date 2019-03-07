@@ -110,6 +110,10 @@ View of the magnetic switch, mounted to the top of the garage door.  The wires c
 
 ## Software Installation:
 
+### Walkthrough Installation Video
+
+Added a walkthrough of the installation instructions on [youtube](https://youtu.be/OK_EWe1pKeE).  You'll probably still want to refer to the below instructions, but it's nice as a reference to see the install process in action.  
+
 ### Raspberry Pi Zero Setup Headless (*from raspberrypi.org*)
 Once you've burned/etched the Raspbian Stretch Lite image onto the microSD card, connect the card to your working PC and you'll see the card being mounted as "boot". Inside this "boot" directory, you need to make 2 new files. You can create the files using Atom code editor.
 
