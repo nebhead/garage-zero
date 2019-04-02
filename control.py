@@ -56,22 +56,34 @@ def SndEmail(settings, notifyevent):
 	try:
 		fromaddr = settings['email']['FromEmail']
 		toaddr = settings['email']['ToEmail']
+		# If there are commas in the string, this means there are likely to be multiple e-mail addresses
+		if(',' in toaddr):
+			# process string to remove spaces
+			toaddr = toaddr.replace(" ", "")
+			# process string into list of e-mail addresses
+			toaddrlist = toaddr.split(",")
+		else:
+			toaddrlist[0] = toaddr
 
-		msg = MIMEMultipart()
-		msg['From'] = fromaddr
-		msg['To'] = toaddr
-		msg['Subject'] = subjectmessage
-		body = notifymessage
-		msg.attach(MIMEText(body, 'plain'))
+		index = 0
+		while(index < len(toaddrlist)):
+			msg = MIMEMultipart()
+			msg['From'] = fromaddr
+			msg['To'] = toaddrlist[index]
+			msg['Subject'] = subjectmessage
+			body = notifymessage
+			msg.attach(MIMEText(body, 'plain'))
 
-		server = smtplib.SMTP(settings['email']['SMTPServer'], settings['email']['SMTPPort'])
-		server.starttls()
-		server.login(fromaddr, settings['email']['Password'])
-		text = msg.as_string()
-		server.sendmail(fromaddr, toaddr, text)
-		server.quit()
-		event = subjectmessage + ". E-mail notification sent."
-		WriteLog(event)
+			server = smtplib.SMTP(settings['email']['SMTPServer'], settings['email']['SMTPPort'])
+			server.starttls()
+			server.login(fromaddr, settings['email']['Password'])
+			text = msg.as_string()
+			server.sendmail(fromaddr, toaddrlist[index], text)
+			server.quit()
+			event = subjectmessage + ". E-mail notification sent to: " + toaddrlist[index]
+			WriteLog(event)
+			index += 1
+
 	except smtplib.SMTPException:
 		event = "E-mail notification failed. SMTPLib general exception class(smptlib.SMTPException)."
 		WriteLog(event)

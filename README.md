@@ -66,6 +66,18 @@ The following GPIOs are mapped for this project:
     relay_gate_pin = 15		# GPIO 15, Pin 10 (RasPi Header)
     switch_pin = 18			# GPIO 18, Pin 12 (RasPi Header)
 
+Truth Table for visualizing the output:
+
+| IN1 | IN2 | Relay1 | Relay2 | Button Output |
+|:---:|:---:|:------:|:------:|:-------------:|
+|  0  |  0  |    C   |   O    | Not Pressed   |
+|  0  |  1  |    C   |   C    | Pressed       |
+|  1  |  0  |    O   |   O    | Not Pressed   |
+|  1  |  1  |    O   |   C    | Not Pressed   |
+
+*C=Closed/Connected*
+
+*O=Open/Not Connected*
 
 ### Photos of the Hardware
 
@@ -266,7 +278,7 @@ And there you have it, you've not only created a quick link to your garage door 
 
 ### Set up e-mail notifications
 
-Navigate to your administration and settings page in the web app.  From here, you can configure your notification settings.  Simply enter your e-mail credentials for the account you want to send FROM in the FROM E-mail box.  Then enter the e-mail address for the account you want to send e-mail notifications to in the TO E-mail box.  Then enter the SMTP server for the FROM E-mail account, the SMTP port and your password.  
+Navigate to your administration and settings page in the web app.  From here, you can configure your notification settings.  Simply enter your e-mail credentials for the account you want to send FROM in the FROM E-mail box.  Then enter the e-mail address for the account you want to send e-mail notifications to in the TO E-mail box.  Then enter the SMTP server for the FROM E-mail account, the SMTP port and your password.  (UPDATE April 2019: It's now possible to enter multiple e-mails in the TO e-mail field, separated by commas)
 
 Finally, set the time in minutes that the garage door is open before sending a notification and click on "Save"
 
