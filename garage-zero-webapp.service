@@ -1,0 +1,15 @@
+[Unit]
+Description=Garage-zero web server
+Wants=network.target
+After=network.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/garage-zero
+ExecStart=/usr/bin/gunicorn --log-syslog --log-syslog-prefix garage-zero app:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

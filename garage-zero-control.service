@@ -1,0 +1,15 @@
+[Unit]
+Description=Garage-zero controller
+Wants=network.target
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/home/pi/garage-zero
+ExecStart=/usr/bin/python control.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
