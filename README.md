@@ -163,7 +163,7 @@ I've created a script to install this automatically, but it is in ALPHA testing.
 After you've done the above steps to configure your raspberry pi, at the command line type the following:
 
 ```
-CURL https://raw.githubusercontent.com/nebhead/garage-zero/master/auto-install/install.sh | bash
+curl https://raw.githubusercontent.com/nebhead/garage-zero/master/auto-install/install.sh | bash
 ```
 
 Follow the onscreen prompts to complete the installation.  At the end of the script it will reboot, so just be aware of this.  

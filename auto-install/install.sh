@@ -6,8 +6,8 @@
 #
 # Install with this command (from your Pi):
 #
-# CURL https://raw.githubusercontent.com/nebhead/garage-zero/master/auto-install/install.sh | bash
-#
+# curl https://raw.githubusercontent.com/nebhead/garage-zero/master/auto-install/install.sh | bash
+# 
 
 # Must be root to install
 if [[ $EUID -eq 0 ]];then
@@ -111,7 +111,7 @@ $SUDO cp *.conf /etc/supervisor/conf.d/
 
 SVISOR=$(whiptail --title "Would you like to enable the supervisor WebUI?" --radiolist "This allows you to check the status of the supervised processes via a web browser, and also allows those processes to be restarted directly from this interface. (Recommended)" 20 78 2 "ENABLE_SVISOR" "Enable the WebUI" ON "DISABLE_SVISOR" "Disable the WebUI" OFF 3>&1 1>&2 2>&3)
 
-if [ $SVISOR = "ENABLE_SVISOR" ]; then
+if [[ $SVISOR = "ENABLE_SVISOR" ]];then
    echo " " | sudo tee -a /etc/supervisor/supervisord.conf > /dev/null
    echo "[inet_http_server]" | sudo tee -a /etc/supervisor/supervisord.conf > /dev/null
    echo "port = 9001" | sudo tee -a /etc/supervisor/supervisord.conf > /dev/null
@@ -138,7 +138,7 @@ crontab -l > my-crontab
 # Add the following line...
 echo "0 0 1 * * cd /home/pi/garage-zero/logs && sh backup.sh" >> my-crontab
 crontab my-crontab
-rm my-crontab 
+rm my-crontab
 
 # Rebooting
 whiptail --msgbox --backtitle "Install Complete / Reboot Required" --title "Installation Completed - Rebooting" "Congratulations, the installation is complete.  At this time, we will perform a reboot and your application should be ready.  You should be able to access your application by opening a browser on your PC or other device and using the IP address for this Pi.  Enjoy!" ${r} ${c}
