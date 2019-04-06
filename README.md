@@ -21,7 +21,7 @@ Pressing the hamburger icon in the upper right of the interface, allows you to g
 
 ![History](documents/images/screenshot-1.jpg)
 
-Pressing the hamburger icon in the upper right of the interface, allow syou to also access to the administration screen. This interface allows you to configure the notification settings (i.e. e-mail and/or IFTTT notifications).
+Pressing the hamburger icon in the upper right of the interface, allows you to also access to the administration screen. This interface allows you to configure the notification settings (i.e. e-mail and/or IFTTT notifications).
 
 ![Admin & Settings](documents/images/screenshot-2.jpg)
 
@@ -155,6 +155,20 @@ sudo raspi-config
 + Set locales
 + Set timezone
 + Replace Hostname with a unique hostname ('i.e. garage-zero')
+
+### Automatic Software Installation (ALPHA)
+
+I've created a script to install this automatically, but it is in ALPHA testing.  Your mileage may vary, and it's still recommended to try the below Manual Install.
+
+After you've done the above steps to configure your raspberry pi, at the command line type the following:
+
+```
+CURL https://raw.githubusercontent.com/nebhead/garage-zero/master/auto-install/install.sh | bash
+```
+
+Follow the onscreen prompts to complete the installation.  At the end of the script it will reboot, so just be aware of this.  
+
+### Manual Software installation (Recommended)
 
 #### Install Git, Python PIP, Flask, Gunicorn, nginx, and supervisord
 ```
