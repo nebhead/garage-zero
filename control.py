@@ -76,11 +76,11 @@ def SndEmail(settings, notifyevent):
 			event = subjectmessage + ". E-mail notification sent to: " + addr
 			WriteLog(event)
 
-	except smtplib.SMTPException:
-		event = "E-mail notification failed. SMTPLib general exception class(smptlib.SMTPException)."
+	except smtplib.SMTPException as e:
+		event = "E-mail notification failed. SMTPLib general exception: %s" % e
 		WriteLog(event)
-	except:
-		event = "E-mail notification failed, for some unknown reason."
+	except Exception as e:
+		event = "E-mail notification failed, with exception: %s" % e
 		WriteLog(event)
 	return()
 
