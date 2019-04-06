@@ -7,7 +7,7 @@
 # Install with this command (from your Pi):
 #
 # curl https://raw.githubusercontent.com/nebhead/garage-zero/master/auto-install/install.sh | bash
-# 
+#
 
 # Must be root to install
 if [[ $EUID -eq 0 ]];then
