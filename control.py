@@ -63,7 +63,7 @@ def SndEmail(settings, notifyevent):
 			# process string into list of e-mail addresses
 			toaddrlist = toaddr.split(",")
 		else:
-			toaddrlist[0] = toaddr
+			toaddrlist = [toaddr]
 
 		index = 0
 		while(index < len(toaddrlist)):
