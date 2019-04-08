@@ -112,12 +112,12 @@ def SendPushoverNotification(settings,notifyevent):
 			request = urllib2.Request(url, json.dumps(data), {'Content-Type': 'application/json'})
 			response = urllib2.urlopen(request)
 			WriteLog("Pushover Notification to %s Succeeded: %s" % (user, notifyevent))
-		except urllib2.HTTPError:
-			WriteLog("Pushover Notification to %s Failed: %s" % (user, notifyevent))
-		except urllib2.URLError:
-			WriteLog("Pushover Notification to %s Failed: %s" % (user, notifyevent))
-		except:
-			WriteLog("Pushover Notification to %s Failed: %s" % (user, notifyevent))
+		except urllib2.HTTPError as e:
+			WriteLog("Pushover Notification to %s Failed: %s" % (user, e))
+		except urllib2.URLError as e:
+			WriteLog("Pushover Notification to %s Failed: %s" % (user, e))
+		except Exception as e:
+			WriteLog("Pushover Notification to %s Failed: %s" % (user, e))
 
 def SendNotification(settings,notifyevent):
 	# WriteLog("[DEBUG]: SendNotification Function. " + notifyevent)
