@@ -84,11 +84,48 @@ def SndEmail(settings, notifyevent):
 		WriteLog(event)
 	return()
 
+
+def SendPushoverNotification(settings,notifyevent):
+	now = datetime.datetime.now()
+
+	if notifyevent == "GarageEvent_Open_Alarm":
+		notifymessage = "GarageZero wants you to know that your garage door has been open for " + str(settings['notification']['minutes']) + " minutes at " + str(now)
+		subjectmessage = "GarageZero: Door Open for " + str(settings['notification']['minutes']) + " Minutes"
+	elif notifyevent == "GarageEvent_Closed":
+		notifymessage = "GarageZero wants you to know that your garage door was closed at " + str(now)
+		subjectmessage = "GarageZero: Closed at " + str(now)
+	else:
+		notifymessage = "Whoops! GarageZero had the following unhandled notify event: " + notifyevent + " at " + str(now)
+		subjectmessage = "GarageZero: Unknown Notification at " + str(now)
+
+	for user in settings['pushover']['UserKeys'].split(','):
+		data = {
+			"token": settings['pushover']['APIKey'],
+			"user": user.strip(),
+			"message": notifymessage,
+			"title": subjectmessage,
+			"url": settings['misc']['PublicURL'],
+		}
+
+		url = 'https://api.pushover.net/1/messages.json'
+		try:
+			request = urllib2.Request(url, json.dumps(data), {'Content-Type': 'application/json'})
+			response = urllib2.urlopen(request)
+			WriteLog("Pushover Notification to %s Succeeded: %s" % (user, notifyevent))
+		except urllib2.HTTPError as e:
+			WriteLog("Pushover Notification to %s Failed: %s" % (user, e))
+		except urllib2.URLError as e:
+			WriteLog("Pushover Notification to %s Failed: %s" % (user, e))
+		except Exception as e:
+			WriteLog("Pushover Notification to %s Failed: %s" % (user, e))
+
 def SendNotification(settings,notifyevent):
 	# WriteLog("[DEBUG]: SendNotification Function. " + notifyevent)
 	if notifyevent == "GarageEvent_Open_Alarm":
 		if settings['email']['FromEmail'] != "":
 			SndEmail(settings, notifyevent)
+		if settings['pushover']['APIKey']:
+			SendPushoverNotification(settings, notifyevent)
 		if settings['ifttt']['APIKey'] != "0":
 			key = settings['ifttt']['APIKey']
 			url = 'https://maker.ifttt.com/trigger/' + notifyevent + '/with/key/' + key
@@ -109,6 +146,8 @@ def SendNotification(settings,notifyevent):
 	if (notifyevent == "GarageEvent_Closed"):
 		if settings['email']['FromEmail'] != "":
 			SndEmail(settings, notifyevent)
+		if settings['pushover']['APIKey']:
+			SendPushoverNotification(settings, notifyevent)
 		if settings['ifttt']['APIKey'] != "0":
 			key = settings['ifttt']['APIKey']
 			url = 'https://maker.ifttt.com/trigger/' + notifyevent + '/with/key/' + key

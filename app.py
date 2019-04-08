@@ -96,32 +96,47 @@ def ReadSettings():
 	# Read Switch States from File
 	# *****************************************
 
+	# Default settings
+	settings = {}
+
+	settings['misc'] = {
+		'PublicURL': '',
+	}
+
+	settings['email'] = {
+		'ToEmail': 'your_to_email', # E-mail address to send notification to
+		'FromEmail': 'your_from_email', # E-mail address to log into system
+		'Password' : 'your_password', # Password
+		'SMTPServer' : 'smtp.gmail.com', # SMTP Server Name
+		'SMTPPort' : 587 # SMTP Port
+		}
+
+	settings['notification'] = {
+		'minutes': 0 # Magnetic Switch
+	}
+
+	settings['ifttt'] = {
+		'APIKey': "0" # API Key for WebMaker IFTTT App notification
+	}
+
+	settings['pushover'] = {
+		'APIKey': '', # API Key for Pushover notifications
+		'UserKeys': '', # Comma-separated list of user keys
+	}
+
 	# Read all lines of states.json into an list(array)
 	try:
 		json_data_file = open("settings.json", "r")
 		json_data_string = json_data_file.read()
-		settings = json.loads(json_data_string)
+		user_settings = json.loads(json_data_string)
 		json_data_file.close()
+
+		# Merge each section of the user settings over the defaults
+		for key in settings.keys():
+			settings[key].update(user_settings.get(key, {}))
+
 	except(IOError, OSError):
 		# Issue with reading states JSON, so create one/write new one
-		settings = {}
-
-		settings['email'] = {
-			'ToEmail': 'your_to_email', # E-mail address to send notification to
-			'FromEmail': 'your_from_email', # E-mail address to log into system
-			'Password' : 'your_password', # Password
-			'SMTPServer' : 'smtp.gmail.com', # SMTP Server Name
-			'SMTPPort' : 587 # SMTP Port
-			}
-
-		settings['notification'] = {
-			'minutes': 0 # Magnetic Switch
-		}
-
-		settings['ifttt'] = {
-			'APIKey': "0" # API Key for WebMaker IFTTT App notification
-		}
-
 		WriteSettings(settings)
 
 	return(settings)
@@ -214,6 +229,11 @@ def admin(action=None):
 				print("password: " + response['password'])
 				settings['email']['Password'] = response['password']
 
+		if('public_url' in response):
+			if(response['public_url']!=''):
+				print("public_url: " + response['public_url'])
+				settings['misc']['PublicURL'] = response['public_url']
+
 		if('timeout' in response):
 			if(response['timeout']!=''):
 				print("Timeout: " + response['timeout'])
@@ -230,6 +250,16 @@ def admin(action=None):
 			if(response['notify_on_open']!=''):
 				print("Notify on Open: " + response['notify_on_open'])
 				settings['ifttt']['notify_on_open'] = response['notify_on_open']
+
+		if('pushover_apikey' in response):
+			if(response['pushover_apikey']!=settings['pushover']['APIKey']):
+				print("Pushover API key: " + response['pushover_apikey'])
+				settings['pushover']['APIKey'] = response['pushover_apikey']
+
+		if('pushover_userkeys' in response):
+			if(response['pushover_userkeys']!=settings['pushover']['UserKeys']):
+				print("Pushover User keys: " + response['pushover_userkeys'])
+				settings['pushover']['UserKeys'] = response['pushover_userkeys']
 
 		WriteSettings(settings)
 		event = "Settings Updated."

@@ -2,6 +2,10 @@ import json
 
 settings = {}
 
+settings['misc'] = {
+	'PublicURL': '',
+}
+
 settings['email'] = {
 	'ToEmail': 'your_to_email', # E-mail address to send notification to
 	'FromEmail': 'your_from_email', # E-mail address to log into system
@@ -17,6 +21,11 @@ settings['notification'] = {
 settings['ifttt'] = {
 	'APIKey': '0',
 	'notify_on_open': "off"
+}
+
+settings['pushover'] = {
+	'APIKey': '', # API Key for Pushover notifications
+	'UserKeys': '', # Comma-separated list of user keys
 }
 
 json_data_string = json.dumps(settings)
