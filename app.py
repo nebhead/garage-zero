@@ -96,32 +96,38 @@ def ReadSettings():
 	# Read Switch States from File
 	# *****************************************
 
+	# Default settings
+	settings = {}
+
+	settings['email'] = {
+		'ToEmail': 'your_to_email', # E-mail address to send notification to
+		'FromEmail': 'your_from_email', # E-mail address to log into system
+		'Password' : 'your_password', # Password
+		'SMTPServer' : 'smtp.gmail.com', # SMTP Server Name
+		'SMTPPort' : 587 # SMTP Port
+		}
+
+	settings['notification'] = {
+		'minutes': 0 # Magnetic Switch
+	}
+
+	settings['ifttt'] = {
+		'APIKey': "0" # API Key for WebMaker IFTTT App notification
+	}
+
 	# Read all lines of states.json into an list(array)
 	try:
 		json_data_file = open("settings.json", "r")
 		json_data_string = json_data_file.read()
-		settings = json.loads(json_data_string)
+		user_settings = json.loads(json_data_string)
 		json_data_file.close()
+
+		# Merge each section of the user settings over the defaults
+		for key in settings.keys():
+			settings[key].update(user_settings.get(key, {}))
+
 	except(IOError, OSError):
 		# Issue with reading states JSON, so create one/write new one
-		settings = {}
-
-		settings['email'] = {
-			'ToEmail': 'your_to_email', # E-mail address to send notification to
-			'FromEmail': 'your_from_email', # E-mail address to log into system
-			'Password' : 'your_password', # Password
-			'SMTPServer' : 'smtp.gmail.com', # SMTP Server Name
-			'SMTPPort' : 587 # SMTP Port
-			}
-
-		settings['notification'] = {
-			'minutes': 0 # Magnetic Switch
-		}
-
-		settings['ifttt'] = {
-			'APIKey': "0" # API Key for WebMaker IFTTT App notification
-		}
-
 		WriteSettings(settings)
 
 	return(settings)
