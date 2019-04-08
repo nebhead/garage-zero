@@ -71,42 +71,6 @@
 
         <i>You can optionally get an e-mail notification if the door is open for a certain amount of time.  Just fill in the e-mail account infomration here, and the specified timeout in minutes after which you'll get an e-mail letting you know your garage door is open.</i>
         <br><br>
-        <!-- From E-mail Entry -->
-        <div class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-export"></i> FROM E-mail: </span>
-          <input id="from_email" type="text" class="form-control" name="from_email" placeholder="{{settings['email']['FromEmail']}}">
-        </div>
-        <h6><b>Note:</b><i>Used for server login.</i></h6>
-				<h6><b>Note:</b><i>Leaving "from" e-mail blank disables e-mail notifications</i></h6>
-
-        <!-- To E-mail Entry -->
-        <div class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-import"></i> TO E-mail: </span>
-          <input id="to_email" type="text" class="form-control" name="to_email" placeholder="{{settings['email']['ToEmail']}}">
-        </div>
-        <h6><b>Note:</b><i>If you want to send notification to multiple e-mails, then seperate with a comma (','). </i></h6>
-        <br>
-
-        <!-- SMTP Server -->
-        <div class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i> SMTP Server: </span>
-          <input id="server" type="text" class="form-control" name="server" placeholder="{{settings['email']['SMTPServer']}}">
-        </div>
-        <br>
-
-        <!-- SMTP Port -->
-        <div class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-resize-small"></i> SMTP Port: </span>
-          <input id="port" type="number" class="form-control" name="port" placeholder="{{settings['email']['SMTPPort']}}">
-        </div>
-        <br>
-
-        <!-- Password Entry -->
-        <div class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i> Password: </span>
-          <input id="password" type="password" class="form-control" name="password" placeholder="********">
-        </div>
-        <br>
 
         <!-- Notification Timeout -->
         <div class="input-group">
@@ -114,24 +78,77 @@
           <input id="timeout" type="number" min="0" max= "120" class="form-control" name="timeout" placeholder="{{settings['notification']['minutes']}}">
         </div>
         <h6><b>Note:</b><i>Timeout of zero (0) disables notifications</i></h6>
+        <br>
 
-				<!-- IFTTT API Key -->
-        <div class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i> IFTTT API Key: </span>
-          <input id="iftttapi" type="text" class="form-control" name="iftttapi" placeholder="{{settings['ifttt']['APIKey']}}">
+        <!-- Email notifications -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Email notifications</h3>
+          </div>
+          <div class="panel-body">
+
+            <!-- From E-mail Entry -->
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-export"></i> FROM E-mail: </span>
+              <input id="from_email" type="text" class="form-control" name="from_email" placeholder="{{settings['email']['FromEmail']}}">
+            </div>
+            <h6><b>Note:</b><i>Used for server login.</i></h6>
+    				<h6><b>Note:</b><i>Leaving "from" e-mail blank disables e-mail notifications</i></h6>
+
+            <!-- To E-mail Entry -->
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-import"></i> TO E-mail: </span>
+              <input id="to_email" type="text" class="form-control" name="to_email" placeholder="{{settings['email']['ToEmail']}}">
+            </div>
+            <h6><b>Note:</b><i>If you want to send notification to multiple e-mails, then seperate with a comma (','). </i></h6>
+
+            <!-- SMTP Server -->
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i> SMTP Server: </span>
+              <input id="server" type="text" class="form-control" name="server" placeholder="{{settings['email']['SMTPServer']}}">
+            </div>
+            <br>
+
+            <!-- SMTP Port -->
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-resize-small"></i> SMTP Port: </span>
+              <input id="port" type="number" class="form-control" name="port" placeholder="{{settings['email']['SMTPPort']}}">
+            </div>
+            <br>
+
+            <!-- Password Entry -->
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i> Password: </span>
+              <input id="password" type="password" class="form-control" name="password" placeholder="********">
+            </div>
+          </div>
         </div>
-        <h6><b>Note:</b><i>Use IFTTT Notificaiton App.  Set to 0 to disable.</i></h6>
 
-				<!-- Notify on Open -->
-				<div class="checkbox">
-					{% if settings['ifttt']['notify_on_open'] == "on" %}
-						<label><input type="checkbox" id="notify_on_open" name="notify_on_open" checked>Notify on Door Open</label>
-					{% else %}
-						<label><input type="checkbox" id="notify_on_open" name="notify_on_open" unchecked>Notify on Door Open</label>
-					{% endif %}
-				</div>
-				<h6><b>Note:</b><i>IFTTT Notification on Door Open.</i></h6>
+        <!-- IFTTT -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">IFTTT notifications</h3>
+          </div>
+          <div class="panel-body">
 
+    				<!-- IFTTT API Key -->
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i> IFTTT API Key: </span>
+              <input id="iftttapi" type="text" class="form-control" name="iftttapi" placeholder="{{settings['ifttt']['APIKey']}}">
+            </div>
+            <h6><b>Note:</b><i>Use IFTTT Notification App.  Set to 0 to disable.</i></h6>
+
+    				<!-- Notify on Open -->
+    				<div class="checkbox">
+    					{% if settings['ifttt']['notify_on_open'] == "on" %}
+    						<label><input type="checkbox" id="notify_on_open" name="notify_on_open" checked>Notify on Door Open</label>
+    					{% else %}
+    						<label><input type="checkbox" id="notify_on_open" name="notify_on_open" unchecked>Notify on Door Open</label>
+    					{% endif %}
+    				</div>
+    				<h6><b>Note:</b><i>IFTTT Notification on Door Open.</i></h6>
+          </div>
+        </div>
       </div>
       <div class="panel-footer">
         <button type="submit" class="btn btn-default">Save Changes</button>
