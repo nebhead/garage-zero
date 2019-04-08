@@ -257,7 +257,7 @@ def admin(action=None):
 				settings['pushover']['APIKey'] = response['pushover_apikey']
 
 		if('pushover_userkeys' in response):
-			if(response['pushover_apikey']!=settings['pushover']['UserKeys']):
+			if(response['pushover_userkeys']!=settings['pushover']['UserKeys']):
 				print("Pushover User keys: " + response['pushover_userkeys'])
 				settings['pushover']['UserKeys'] = response['pushover_userkeys']
 
