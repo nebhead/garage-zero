@@ -80,6 +80,14 @@
         <h6><b>Note:</b><i>Timeout of zero (0) disables notifications</i></h6>
         <br>
 
+        <!-- URL -->
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-hourglass"></i> System URL: </span>
+          <input id="public_url" type="text" class="form-control" name="public_url" placeholder="{{settings['misc']['PublicURL']}}">
+        </div>
+        <h6><b>Note:</b><i>The public URL of your Garage Zero system, included in notifications.</i></h6>
+        <br>
+
         <!-- Email notifications -->
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -93,7 +101,7 @@
               <input id="from_email" type="text" class="form-control" name="from_email" placeholder="{{settings['email']['FromEmail']}}">
             </div>
             <h6><b>Note:</b><i>Used for server login.</i></h6>
-    				<h6><b>Note:</b><i>Leaving "from" e-mail blank disables e-mail notifications</i></h6>
+            <h6><b>Note:</b><i>Leaving "from" e-mail blank disables e-mail notifications</i></h6>
 
             <!-- To E-mail Entry -->
             <div class="input-group">
@@ -131,22 +139,46 @@
           </div>
           <div class="panel-body">
 
-    				<!-- IFTTT API Key -->
+            <!-- IFTTT API Key -->
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i> IFTTT API Key: </span>
               <input id="iftttapi" type="text" class="form-control" name="iftttapi" placeholder="{{settings['ifttt']['APIKey']}}">
             </div>
             <h6><b>Note:</b><i>Use IFTTT Notification App.  Set to 0 to disable.</i></h6>
 
-    				<!-- Notify on Open -->
-    				<div class="checkbox">
-    					{% if settings['ifttt']['notify_on_open'] == "on" %}
-    						<label><input type="checkbox" id="notify_on_open" name="notify_on_open" checked>Notify on Door Open</label>
-    					{% else %}
-    						<label><input type="checkbox" id="notify_on_open" name="notify_on_open" unchecked>Notify on Door Open</label>
-    					{% endif %}
-    				</div>
-    				<h6><b>Note:</b><i>IFTTT Notification on Door Open.</i></h6>
+            <!-- Notify on Open -->
+            <div class="checkbox">
+              {% if settings['ifttt']['notify_on_open'] == "on" %}
+                <label><input type="checkbox" id="notify_on_open" name="notify_on_open" checked>Notify on Door Open</label>
+              {% else %}
+                <label><input type="checkbox" id="notify_on_open" name="notify_on_open" unchecked>Notify on Door Open</label>
+              {% endif %}
+            </div>
+            <h6><b>Note:</b><i>IFTTT Notification on Door Open.</i></h6>
+          </div>
+        </div>
+
+        <!-- Pushover settings -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Pushover notifications</h3>
+          </div>
+          <div class="panel-body">
+
+            <!-- API Key -->
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i> API Key: </span>
+              <input id="pushover_apikey" type="text" class="form-control" name="pushover_apikey" placeholder="{{settings['pushover']['APIKey']}}">
+            </div>
+            <br>
+
+            <!-- API Key -->
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i> User Keys: </span>
+              <input id="pushover_userkeys" type="text" class="form-control" name="pushover_userkeys" placeholder="{{settings['pushover']['UserKeys']}}">
+            </div>
+            <h6><b>Note:</b><i>If you want to send notification to multiple users, then seperate with a comma (','). </i></h6>
+
           </div>
         </div>
       </div>

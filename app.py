@@ -99,6 +99,10 @@ def ReadSettings():
 	# Default settings
 	settings = {}
 
+	settings['misc'] = {
+		'PublicURL': '',
+	}
+
 	settings['email'] = {
 		'ToEmail': 'your_to_email', # E-mail address to send notification to
 		'FromEmail': 'your_from_email', # E-mail address to log into system
@@ -113,6 +117,11 @@ def ReadSettings():
 
 	settings['ifttt'] = {
 		'APIKey': "0" # API Key for WebMaker IFTTT App notification
+	}
+
+	settings['pushover'] = {
+		'APIKey': '', # API Key for Pushover notifications
+		'UserKeys': '', # Comma-separated list of user keys
 	}
 
 	# Read all lines of states.json into an list(array)
@@ -220,6 +229,11 @@ def admin(action=None):
 				print("password: " + response['password'])
 				settings['email']['Password'] = response['password']
 
+		if('public_url' in response):
+			if(response['public_url']!=''):
+				print("public_url: " + response['public_url'])
+				settings['misc']['PublicURL'] = response['public_url']
+
 		if('timeout' in response):
 			if(response['timeout']!=''):
 				print("Timeout: " + response['timeout'])
@@ -236,6 +250,16 @@ def admin(action=None):
 			if(response['notify_on_open']!=''):
 				print("Notify on Open: " + response['notify_on_open'])
 				settings['ifttt']['notify_on_open'] = response['notify_on_open']
+
+		if('pushover_apikey' in response):
+			if(response['pushover_apikey']!=settings['pushover']['APIKey']):
+				print("Pushover API key: " + response['pushover_apikey'])
+				settings['pushover']['APIKey'] = response['pushover_apikey']
+
+		if('pushover_userkeys' in response):
+			if(response['pushover_apikey']!=settings['pushover']['UserKeys']):
+				print("Pushover User keys: " + response['pushover_userkeys'])
+				settings['pushover']['UserKeys'] = response['pushover_userkeys']
 
 		WriteSettings(settings)
 		event = "Settings Updated."
