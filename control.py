@@ -22,6 +22,7 @@ from email.MIMEText import MIMEText
 import urllib2
 import urllib
 import RPi.GPIO as GPIO
+from common import *
 
 # GPIO Definitions
 relay_pin = 14			# GPIO 14, Pin 08 (RasPi Header)
@@ -189,96 +190,6 @@ def ToggleRelay():
 	time.sleep(0.5)			#Wait for 0.5s
 	GPIO.output(relay_pin, 0)	#Turn off Relay
 
-def ReadStates():
-	# *****************************************
-	# Read Switch States from File
-	# *****************************************
-
-	# Read all lines of states.json into an list(array)
-	try:
-		json_data_file = open("states.json", "r")
-		json_data_string = json_data_file.read()
-		states = json.loads(json_data_string)
-		json_data_file.close()
-	except(IOError, OSError):
-		# Issue with reading states JSON, so create one/write new one
-		states = {}
-
-		states['inputs'] = {
-			'switch': False # Magnetic Switch
-		}
-
-		states['outputs'] = {
-			'button': False # Relay Button
-		}
-		WriteStates(states)
-
-	return(states)
-
-def WriteStates(states):
-	# *****************************************
-	# Write all control states to JSON file
-	# *****************************************
-	json_data_string = json.dumps(states)
-	with open("states.json", 'w') as settings_file:
-		settings_file.write(json_data_string)
-
-def ReadSettings():
-	# *****************************************
-	# Read Settings from File
-	# *****************************************
-
-	# Read all lines of settings.json into an list(array)
-	try:
-		json_data_file = open("settings.json", "r")
-		json_data_string = json_data_file.read()
-		settings = json.loads(json_data_string)
-		json_data_file.close()
-	except(IOError, OSError):
-		# Issue with reading settings JSON, so create one/write new one
-		settings = {}
-
-		settings['email'] = {
-			'ToEmail': 'your_to_email', # E-mail address to send notification to
-			'FromEmail': 'your_from_email', # E-mail address to log into system
-			'Password' : 'your_password', # Password
-			'SMTPServer' : 'smtp.gmail.com', # SMTP Server Name
-			'SMTPPort' : 587 # SMTP Port
-			}
-
-		settings['notification'] = {
-			'minutes': 0 # Minutes
-		}
-
-		settings['ifttt'] = {
-			'APIKey': '0'
-		}
-
-		WriteSettings(settings)
-
-	return(settings)
-
-def WriteSettings(settings):
-	# *****************************************
-	# Write all settings to JSON file
-	# *****************************************
-	json_data_string = json.dumps(settings)
-	with open("settings.json", 'w') as settings_file:
-		settings_file.write(json_data_string)
-
-def WriteLog(event):
-	# *****************************************
-	# Function: WriteLog
-	# Input: str event
-	# Description: Write event to event.log
-	#  Event should be a string.
-	# *****************************************
-	now = str(datetime.datetime.now())
-	now = now[0:19] # Truncate the microseconds
-
-	logfile = open("events.log", "a")
-	logfile.write(now + ' ' + event + '\n')
-	logfile.close()
 
 def CheckDoorState(states, settings):
 	# *****************************************
