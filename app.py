@@ -2,7 +2,6 @@ from flask import Flask, request, render_template, make_response
 import time
 import datetime
 import os
-import json
 from common import *
 
 app = Flask(__name__)

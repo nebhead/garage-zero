@@ -1,4 +1,3 @@
-import json
 from common import *
 
 states = DefaultStates()
