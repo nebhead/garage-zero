@@ -66,8 +66,10 @@ def SndEmail(settings, notifyevent):
 		msg.attach(MIMEText(body, 'plain'))
 
 		server = smtplib.SMTP(settings['email']['SMTPServer'], settings['email']['SMTPPort'])
-		server.starttls()
-		server.login(fromaddr, settings['email']['Password'])
+		if settings['email']['UseTLS']:
+			server.starttls()
+		if settings['email']['Username']:
+			server.login(settings['email']['Username'], settings['email']['Password'])
 		text = msg.as_string()
 		server.sendmail(fromaddr, toaddrlist, text)
 		server.quit()

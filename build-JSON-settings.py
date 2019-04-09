@@ -9,10 +9,12 @@ settings['misc'] = {
 settings['email'] = {
 	'ToEmail': 'your_to_email', # E-mail address to send notification to
 	'FromEmail': 'your_from_email', # E-mail address to log into system
+	'Username' : 'your_password', # Username
 	'Password' : 'your_password', # Password
 	'SMTPServer' : 'smtp.gmail.com', # SMTP Server Name
-	'SMTPPort' : 587 # SMTP Port
-	}
+	'SMTPPort' : 587, # SMTP Port
+	'UseTLS': True,
+}
 
 settings['notification'] = {
 	'minutes': 0 # Magnetic Switch

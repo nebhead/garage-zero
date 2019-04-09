@@ -106,9 +106,11 @@ def ReadSettings():
 	settings['email'] = {
 		'ToEmail': 'your_to_email', # E-mail address to send notification to
 		'FromEmail': 'your_from_email', # E-mail address to log into system
+		'Username': 'your_username', # Username
 		'Password' : 'your_password', # Password
 		'SMTPServer' : 'smtp.gmail.com', # SMTP Server Name
-		'SMTPPort' : 587 # SMTP Port
+		'SMTPPort' : 587, # SMTP Port
+		'UseTLS': True,
 		}
 
 	settings['notification'] = {
@@ -116,7 +118,8 @@ def ReadSettings():
 	}
 
 	settings['ifttt'] = {
-		'APIKey': "0" # API Key for WebMaker IFTTT App notification
+		'APIKey': "0", # API Key for WebMaker IFTTT App notification
+		'notify_on_open': "off",
 	}
 
 	settings['pushover'] = {
@@ -224,10 +227,20 @@ def admin(action=None):
 				print("Port: " + response['port'])
 				settings['email']['SMTPPort'] = int(response['port'])
 
+		if('username' in response):
+			if(response['username']!=''):
+				print("username: " + response['username'])
+				settings['email']['Username'] = response['username']
+
 		if('password' in response):
 			if(response['password']!=''):
 				print("password: " + response['password'])
 				settings['email']['Password'] = response['password']
+
+		use_tls = 'use_tls' in response
+		if(use_tls!=settings['email']['UseTLS']):
+			print("useTLS: %s" % use_tls)
+			settings['email']['UseTLS'] = use_tls
 
 		if('public_url' in response):
 			if(response['public_url']!=''):
