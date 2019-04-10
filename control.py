@@ -44,19 +44,19 @@ opened_at = 0 # Time the door was opened
 
 def SendEmail(settings, notifyevent):
 	# WriteLog("[DEBUG]: SndEmail Function. " + notifyevent)
-	now = datetime.datetime.now()
+	now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
 
 	if notifyevent == "GarageEvent_Open_Alarm" or notifyevent == "GarageEvent_StillOpen_Alarm":
 		open_minutes = int((time.time() - opened_at) / 60)
 		notifymessage = "GarageZero wants you to know that your garage door has been open for %d minutes at %s" % (open_minutes, now)
 		subjectmessage = "GarageZero: Door Open for %d Minutes" % open_minutes
 	elif notifyevent == "GarageEvent_Closed":
-		notifymessage = "GarageZero wants you to know that your garage door was closed at " + str(now)
+		notifymessage = "GarageZero wants you to know that your garage door was closed at " + now
 		subjectmessage = "GarageZero: Closed at " + str(now)
 	elif notifyevent == "GarageEvent_Notify_on_Open":
 		return # don't send emails for these
 	else:
-		notifymessage = "Whoops! GarageZero had the following unhandled notify event: " + notifyevent + " at " + str(now)
+		notifymessage = "Whoops! GarageZero had the following unhandled notify event: " + notifyevent + " at " + now
 		subjectmessage = "GarageZero: Unknown Notification at " + str(now)
 
 	try:
@@ -94,19 +94,19 @@ def SendEmail(settings, notifyevent):
 
 
 def SendPushoverNotification(settings,notifyevent):
-	now = datetime.datetime.now()
+	now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
 
 	if notifyevent == "GarageEvent_Open_Alarm" or notifyevent == "GarageEvent_StillOpen_Alarm":
 		open_minutes = int((time.time() - opened_at) / 60)
 		notifymessage = "GarageZero wants you to know that your garage door has been open for %d minutes at %s" % (open_minutes, now)
 		subjectmessage = "GarageZero: Door Open for %d Minutes" % open_minutes
 	elif notifyevent == "GarageEvent_Closed":
-		notifymessage = "GarageZero wants you to know that your garage door was closed at " + str(now)
+		notifymessage = "GarageZero wants you to know that your garage door was closed at " + now
 		subjectmessage = "GarageZero: Closed at " + str(now)
 	elif notifyevent == "GarageEvent_Notify_on_Open":
 		return # don't send Pushover notifications for these
 	else:
-		notifymessage = "Whoops! GarageZero had the following unhandled notify event: " + notifyevent + " at " + str(now)
+		notifymessage = "Whoops! GarageZero had the following unhandled notify event: " + notifyevent + " at " + now
 		subjectmessage = "GarageZero: Unknown Notification at " + str(now)
 
 	for user in settings['pushover']['UserKeys'].split(','):
