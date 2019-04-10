@@ -242,7 +242,11 @@ while True:
 			# WriteLog("[DEBUG]: Garage still open for 10 mins. Calling SendNotification Function")
 			notifyevent = "GarageEvent_StillOpen_Alarm"
 			SendNotification(settings,notifyevent)
-			reminder_timer_start = time.time() # Restart the timer
+
+			if settings['notification']['reminder'] > 0: # check that the setting hasn't changed
+				reminder_timer_start = time.time() # Restart the timer
+			else:
+				reminder_timer_start = 0
 
 	if (states['outputs']['button'] == True):
 
