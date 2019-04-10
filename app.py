@@ -106,6 +106,11 @@ def admin(action=None):
 				print("Timeout: " + response['timeout'])
 				settings['notification']['minutes'] = int(response['timeout'])
 
+		if('reminder' in response):
+			if(response['reminder']!=''):
+				print("Reminder: " + response['reminder'])
+				settings['notification']['reminder'] = int(response['reminder'])
+
 		if('iftttapi' in response):
 			if(response['iftttapi']!=''):
 				print("IFTTT API Key: " + response['iftttapi'])

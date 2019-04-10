@@ -21,7 +21,8 @@ def DefaultSettings():
 	}
 
 	settings['notification'] = {
-		'minutes': 0 # Magnetic Switch
+		'minutes': 0, # Once-off notification that the door is open
+		'reminder': 0, # Repeated notification that the door is still open
 	}
 
 	settings['ifttt'] = {
