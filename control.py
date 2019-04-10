@@ -42,7 +42,7 @@ reminder_timer_start = 0 # Initialize reminder_timer_start, set to 0
 notify_on_close = False # Initialize the flag for notifying that the door has closed
 opened_at = 0 # Time the door was opened
 
-def SndEmail(settings, notifyevent):
+def SendEmail(settings, notifyevent):
 	# WriteLog("[DEBUG]: SndEmail Function. " + notifyevent)
 	now = datetime.datetime.now()
 
@@ -53,6 +53,8 @@ def SndEmail(settings, notifyevent):
 	elif notifyevent == "GarageEvent_Closed":
 		notifymessage = "GarageZero wants you to know that your garage door was closed at " + str(now)
 		subjectmessage = "GarageZero: Closed at " + str(now)
+	elif notifyevent == "GarageEvent_Notify_on_Open":
+		return # don't send emails for these
 	else:
 		notifymessage = "Whoops! GarageZero had the following unhandled notify event: " + notifyevent + " at " + str(now)
 		subjectmessage = "GarageZero: Unknown Notification at " + str(now)
@@ -101,6 +103,8 @@ def SendPushoverNotification(settings,notifyevent):
 	elif notifyevent == "GarageEvent_Closed":
 		notifymessage = "GarageZero wants you to know that your garage door was closed at " + str(now)
 		subjectmessage = "GarageZero: Closed at " + str(now)
+	elif notifyevent == "GarageEvent_Notify_on_Open":
+		return # don't send Pushover notifications for these
 	else:
 		notifymessage = "Whoops! GarageZero had the following unhandled notify event: " + notifyevent + " at " + str(now)
 		subjectmessage = "GarageZero: Unknown Notification at " + str(now)
@@ -126,87 +130,43 @@ def SendPushoverNotification(settings,notifyevent):
 		except Exception as e:
 			WriteLog("Pushover Notification to %s Failed: %s" % (user, e))
 
-def SendNotification(settings,notifyevent):
-	# WriteLog("[DEBUG]: SendNotification Function. " + notifyevent)
+
+def SendIFTTTNotification(settings,notifyevent):
+	# WriteLog("[DEBUG]: SendIFTTTNotification Function. " + notifyevent)
+
+	key = settings['ifttt']['APIKey']
+	url = 'https://maker.ifttt.com/trigger/' + notifyevent + '/with/key/' + key
+
 	if notifyevent == "GarageEvent_Open_Alarm":
-		if settings['email']['FromEmail'] != "":
-			SndEmail(settings, notifyevent)
-		if settings['pushover']['APIKey']:
-			SendPushoverNotification(settings, notifyevent)
-		if settings['ifttt']['APIKey'] != "0":
-			key = settings['ifttt']['APIKey']
-			url = 'https://maker.ifttt.com/trigger/' + notifyevent + '/with/key/' + key
-			try:
-				query_args = { "value1" : str(settings['notification']['minutes']) }
-				postdata = urllib.urlencode(query_args)
+		query_args = { "value1" : str(settings['notification']['minutes']) }
+	elif notifyevent == "GarageEvent_StillOpen_Alarm":
+		open_minutes = int((time.time() - opened_at) / 60)
+		query_args = { "value1" : open_minutes }
+	else:
+		query_args = {}
 
-				request = urllib2.Request(url,postdata)
-				response = urllib2.urlopen(request)
-				WriteLog("IFTTT Notification Success: " + notifyevent)
-			except urllib2.HTTPError:
-				WriteLog("IFTTT Notification Failed: " + notifyevent)
-			except urllib2.URLError:
-				WriteLog("IFTTT Notification Failed: " + notifyevent)
-			except:
-				WriteLog("IFTTT Notification Failed: " + notifyevent)
+	try:
+		postdata = urllib.urlencode(query_args)
 
-	if notifyevent == "GarageEvent_StillOpen_Alarm":
-		if settings['email']['FromEmail'] != "":
-			SndEmail(settings, notifyevent)
-		if settings['pushover']['APIKey']:
-			SendPushoverNotification(settings, notifyevent)
-		if settings['ifttt']['APIKey'] != "0":
-			key = settings['ifttt']['APIKey']
-			url = 'https://maker.ifttt.com/trigger/' + notifyevent + '/with/key/' + key
-			try:
-				open_minutes = int((time.time() - opened_at) / 60)
-				query_args = { "value1" : open_minutes }
-				postdata = urllib.urlencode(query_args)
+		request = urllib2.Request(url,postdata)
+		response = urllib2.urlopen(request)
+		WriteLog("IFTTT Notification Success: " + notifyevent)
+	except urllib2.HTTPError:
+		WriteLog("IFTTT Notification Failed: " + notifyevent)
+	except urllib2.URLError:
+		WriteLog("IFTTT Notification Failed: " + notifyevent)
+	except:
+		WriteLog("IFTTT Notification Failed: " + notifyevent)
 
-				request = urllib2.Request(url,postdata)
-				response = urllib2.urlopen(request)
-				WriteLog("IFTTT Notification Success: " + notifyevent)
-			except urllib2.HTTPError:
-				WriteLog("IFTTT Notification Failed: " + notifyevent)
-			except urllib2.URLError:
-				WriteLog("IFTTT Notification Failed: " + notifyevent)
-			except:
-				WriteLog("IFTTT Notification Failed: " + notifyevent)
 
-	if (notifyevent == "GarageEvent_Closed"):
-		if settings['email']['FromEmail'] != "":
-			SndEmail(settings, notifyevent)
-		if settings['pushover']['APIKey']:
-			SendPushoverNotification(settings, notifyevent)
-		if settings['ifttt']['APIKey'] != "0":
-			key = settings['ifttt']['APIKey']
-			url = 'https://maker.ifttt.com/trigger/' + notifyevent + '/with/key/' + key
-			try:
-				request = urllib2.Request(url)
-				response = urllib2.urlopen(request)
-				WriteLog("IFTTT Notification Success: " + notifyevent)
-			except urllib2.HTTPError:
-				WriteLog("IFTTT Notification Failed: " + notifyevent)
-			except urllib2.URLError:
-				WriteLog("IFTTT Notification Failed: " + notifyevent)
-			except:
-				WriteLog("IFTTT Notification Failed: " + notifyevent)
+def SendNotification(settings,notifyevent):
+	if settings['email']['FromEmail'] != "":
+		SendEmail(settings, notifyevent)
+	if settings['pushover']['APIKey']:
+		SendPushoverNotification(settings, notifyevent)
+	if settings['ifttt']['APIKey'] != "0":
+		SendIFTTTNotification(settings, notifyevent)
 
-	if (notifyevent == "GarageEvent_Notify_on_Open") and (settings['ifttt']['APIKey'] != "0"):
-		key = settings['ifttt']['APIKey']
-		url = 'https://maker.ifttt.com/trigger/' + notifyevent + '/with/key/' + key
-		try:
-			request = urllib2.Request(url)
-			response = urllib2.urlopen(request)
-			WriteLog("IFTTT Notification Success: " + notifyevent)
-		except urllib2.HTTPError:
-			WriteLog("IFTTT Notification Failed: " + notifyevent)
-		except urllib2.URLError:
-			WriteLog("IFTTT Notification Failed: " + notifyevent)
-		except:
-			WriteLog("IFTTT Notification Failed: " + notifyevent)
-
-	return()
 
 def ToggleRelay():
 	# *****************************************
