@@ -122,13 +122,14 @@ def SendPushoverNotification(settings,notifyevent):
 		try:
 			request = urllib2.Request(url, json.dumps(data), {'Content-Type': 'application/json'})
 			response = urllib2.urlopen(request)
-			WriteLog("Pushover Notification to %s Succeeded: %s" % (user, notifyevent))
+			WriteLog(subjectmessage + ". Pushover notification sent to: " + user.strip())
+
 		except urllib2.HTTPError as e:
-			WriteLog("Pushover Notification to %s Failed: %s" % (user, e))
+			WriteLog("Pushover Notification to %s failed: %s" % (user, e))
 		except urllib2.URLError as e:
-			WriteLog("Pushover Notification to %s Failed: %s" % (user, e))
+			WriteLog("Pushover Notification to %s failed: %s" % (user, e))
 		except Exception as e:
-			WriteLog("Pushover Notification to %s Failed: %s" % (user, e))
+			WriteLog("Pushover Notification to %s failed: %s" % (user, e))
 
 
 def SendIFTTTNotification(settings,notifyevent):
