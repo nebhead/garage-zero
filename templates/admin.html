@@ -69,15 +69,22 @@
       </div>
       <div class="panel-body">
 
-        <i>You can optionally get an e-mail notification if the door is open for a certain amount of time.  Just fill in the e-mail account infomration here, and the specified timeout in minutes after which you'll get an e-mail letting you know your garage door is open.</i>
+        <i>You can optionally get an notifications if the door is open for a certain amount of time.  Just fill in the account information here, and the specified timeout in minutes after which you'll get a notification letting you know your garage door is open.</i>
         <br><br>
 
         <!-- Notification Timeout -->
         <div class="input-group">
           <span class="input-group-addon"><i class="glyphicon glyphicon-hourglass"></i> Notify Timeout(mins): </span>
-          <input id="timeout" type="number" min="0" max= "120" class="form-control" name="timeout" placeholder="{{settings['notification']['minutes']}}">
+          <input id="timeout" type="number" min="0" max="120" class="form-control" name="timeout" placeholder="{{settings['notification']['minutes']}}">
         </div>
         <h6><b>Note:</b><i>Timeout of zero (0) disables notifications</i></h6>
+
+        <!-- Reminder Notification Timeout -->
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-hourglass"></i> Reminder Timeout(mins): </span>
+          <input id="reminder" type="number" min="0" max="120" class="form-control" name="reminder" placeholder="{{settings['notification']['reminder']}}">
+        </div>
+        <h6><b>Note:</b><i>This notification will be sent repeatedly at the specified interval until the door is closed. A setting of zero (0) disables this.</i></h6>
         <br>
 
         <!-- URL -->

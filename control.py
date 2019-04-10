@@ -38,15 +38,18 @@ GPIO.setup(relay_gate_pin, GPIO.OUT, initial=0) # Setup Relay IN2 on GPIO
 GPIO.setup(switch_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Setup Magnetic Switch on GPIO18 (set pull down)
 
 timer_start = 0 # Initialize timer_start variable, set to 0
+reminder_timer_start = 0 # Initialize reminder_timer_start, set to 0
 notify_on_close = False # Initialize the flag for notifying that the door has closed
+opened_at = 0 # Time the door was opened
 
 def SndEmail(settings, notifyevent):
 	# WriteLog("[DEBUG]: SndEmail Function. " + notifyevent)
 	now = datetime.datetime.now()
 
-	if notifyevent == "GarageEvent_Open_Alarm":
-		notifymessage = "GarageZero wants you to know that your garage door has been open for " + str(settings['notification']['minutes']) + " minutes at " + str(now)
-		subjectmessage = "GarageZero: Door Open for " + str(settings['notification']['minutes']) + " Minutes"
+	if notifyevent == "GarageEvent_Open_Alarm" or notifyevent == "GarageEvent_StillOpen_Alarm":
+		open_minutes = int((time.time() - opened_at) / 60)
+		notifymessage = "GarageZero wants you to know that your garage door has been open for %d minutes at %s" % (open_minutes, now)
+		subjectmessage = "GarageZero: Door Open for %d Minutes" % open_minutes
 	elif notifyevent == "GarageEvent_Closed":
 		notifymessage = "GarageZero wants you to know that your garage door was closed at " + str(now)
 		subjectmessage = "GarageZero: Closed at " + str(now)
@@ -91,9 +94,10 @@ def SndEmail(settings, notifyevent):
 def SendPushoverNotification(settings,notifyevent):
 	now = datetime.datetime.now()
 
-	if notifyevent == "GarageEvent_Open_Alarm":
-		notifymessage = "GarageZero wants you to know that your garage door has been open for " + str(settings['notification']['minutes']) + " minutes at " + str(now)
-		subjectmessage = "GarageZero: Door Open for " + str(settings['notification']['minutes']) + " Minutes"
+	if notifyevent == "GarageEvent_Open_Alarm" or notifyevent == "GarageEvent_StillOpen_Alarm":
+		open_minutes = int((time.time() - opened_at) / 60)
+		notifymessage = "GarageZero wants you to know that your garage door has been open for %d minutes at %s" % (open_minutes, now)
+		subjectmessage = "GarageZero: Door Open for %d Minutes" % open_minutes
 	elif notifyevent == "GarageEvent_Closed":
 		notifymessage = "GarageZero wants you to know that your garage door was closed at " + str(now)
 		subjectmessage = "GarageZero: Closed at " + str(now)
@@ -134,6 +138,29 @@ def SendNotification(settings,notifyevent):
 			url = 'https://maker.ifttt.com/trigger/' + notifyevent + '/with/key/' + key
 			try:
 				query_args = { "value1" : str(settings['notification']['minutes']) }
+				postdata = urllib.urlencode(query_args)
+
+				request = urllib2.Request(url,postdata)
+				response = urllib2.urlopen(request)
+				WriteLog("IFTTT Notification Success: " + notifyevent)
+			except urllib2.HTTPError:
+				WriteLog("IFTTT Notification Failed: " + notifyevent)
+			except urllib2.URLError:
+				WriteLog("IFTTT Notification Failed: " + notifyevent)
+			except:
+				WriteLog("IFTTT Notification Failed: " + notifyevent)
+
+	if notifyevent == "GarageEvent_StillOpen_Alarm":
+		if settings['email']['FromEmail'] != "":
+			SndEmail(settings, notifyevent)
+		if settings['pushover']['APIKey']:
+			SendPushoverNotification(settings, notifyevent)
+		if settings['ifttt']['APIKey'] != "0":
+			key = settings['ifttt']['APIKey']
+			url = 'https://maker.ifttt.com/trigger/' + notifyevent + '/with/key/' + key
+			try:
+				open_minutes = int((time.time() - opened_at) / 60)
+				query_args = { "value1" : open_minutes }
 				postdata = urllib.urlencode(query_args)
 
 				request = urllib2.Request(url,postdata)
@@ -197,6 +224,8 @@ def CheckDoorState(states, settings):
 	# Function run from Readstates()
 	# *****************************************
 	global timer_start
+        global reminder_timer_start
+        global opened_at
 
 	if (GPIO.input(switch_pin) == True and states['inputs']['switch'] != True):
 		states['inputs']['switch'] = True
@@ -205,6 +234,7 @@ def CheckDoorState(states, settings):
 		WriteLog(event)
 		if(settings['notification']['minutes'] > 0):
 			timer_start = time.time() # Set start time for timer
+			opened_at = timer_start # Note time the door was actually opened
 		if(settings['ifttt']['notify_on_open'] == "on"):
 			notifyevent = "GarageEvent_Notify_on_Open"
 			SendNotification(settings,notifyevent)
@@ -215,6 +245,7 @@ def CheckDoorState(states, settings):
 		event = "Door Closed."
 		WriteLog(event)
 		timer_start = 0
+		reminder_timer_start = 0
 		time.sleep(1)
 	return(states)
 
@@ -241,6 +272,16 @@ while True:
 			SendNotification(settings,notifyevent)
 			timer_start = 0 # Stop the timer, stop from sending another notification
 			notify_on_close = True
+
+			if (settings['notification']['reminder'] > 0):
+				reminder_timer_start = time.time()
+
+	if (reminder_timer_start > 0):
+		if(time.time() > (reminder_timer_start + (settings['notification']['reminder']*60))):
+			# WriteLog("[DEBUG]: Garage still open for 10 mins. Calling SendNotification Function")
+			notifyevent = "GarageEvent_StillOpen_Alarm"
+			SendNotification(settings,notifyevent)
+			reminder_timer_start = time.time() # Restart the timer
 
 	if (states['outputs']['button'] == True):
 
