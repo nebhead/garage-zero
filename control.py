@@ -25,8 +25,8 @@ import RPi.GPIO as GPIO
 from common import *
 
 # GPIO Definitions
-relay_pin = 14			# GPIO 14, Pin 08 (RasPi Header)
-relay_gate_pin = 15		# GPIO 15, Pin 10 (RasPi Header)
+relay_pin = 15			# GPIO 15, Pin 10 (RasPi Header)
+relay_gate_pin = 14		# GPIO 14, Pin 08 (RasPi Header)
 switch_pin = 18			# GPIO 18, Pin 12 (RasPi Header)
 
 # Init GPIO's to default values / behavior
