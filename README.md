@@ -59,7 +59,7 @@ The following GPIOs are mapped for this project:
 * **GPIO14** - Output Relay Control Gate (Prevents spurious open/close events during power-on, shutdown and reboot cycles) **IMPORTANT:** This relay should have a wire connected to the Normally Closed (NC) side of the relay. Otherwise, it will not function properly, preventing all button presses.
 * **GPIO18** - Input for Magnetic Switch (Current State of Garage Door)
 
-**Note:**  *Optional design change.*  Per user [hmoffet](https://github.com/hmoffatt), there may not be a need for the 1k pull-down resistor.  It is probably OK to have the switch ground the input. Secondly there are fixed pull-up resistors of 1.8k on GPIOs 2 and 3 of the Raspberry PI. So you can just connect the switch directly to +3.3V and GPIO 2 or 3 without adding any extra resistors. If you make this design change, make sure you change the GPIO definition in the code from GPIO18 to GPIO2.  
+**Note:**  *Optional design change.*  Per user [hmoffatt](https://github.com/hmoffatt), there may not be a need for the 1k pull-down resistor.  It is probably OK to have the switch ground the input. Secondly there are fixed pull-up resistors of 1.8k on GPIOs 2 and 3 of the Raspberry PI. So you can just connect the switch directly to +3.3V and GPIO 2 or 3 without adding any extra resistors. If you make this design change, make sure you change the GPIO definition in the code from GPIO18 to GPIO2.  
 
 **Note:** If you want to change which GPIOs you would like to use, please modify the control.py constants to what you want to use. Edit the following lines(*in control.py*):
 
