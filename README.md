@@ -174,6 +174,11 @@ Follow the onscreen prompts to complete the installation.  At the end of the scr
 
 ### Manual Software installation (Recommended)
 
+#### Give pi user access to the GPIO pins
+```
+sudo adduser pi gpio
+```
+
 #### Install Git, Python PIP, Flask, Gunicorn, nginx, and supervisord
 ```
 sudo apt update
