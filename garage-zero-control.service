@@ -4,8 +4,8 @@ Wants=network.target
 After=network.target
 
 [Service]
-User=root
-Group=root
+User=pi
+Group=pi
 WorkingDirectory=/home/pi/garage-zero
 ExecStart=/usr/bin/python control.py
 Restart=always
