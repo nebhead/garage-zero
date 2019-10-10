@@ -3,6 +3,10 @@ import datetime
 import os
 import json
 
+# Storage for Door States. 
+# On Raspberry Pi /var/tmp is ram storage
+states_file = "/var/tmp/states.json"
+
 def DefaultSettings():
 	settings = {}
 
@@ -58,7 +62,7 @@ def ReadSettings():
 	# Default settings
 	settings = DefaultSettings()
 
-	# Read all lines of states.json into an list(array)
+	# Read all lines of settings.json into an list(array)
 	try:
 		json_data_file = open("settings.json", "r")
 		json_data_string = json_data_file.read()
@@ -70,7 +74,7 @@ def ReadSettings():
 			settings[key].update(user_settings.get(key, {}))
 
 	except(IOError, OSError):
-		# Issue with reading states JSON, so create one/write new one
+		# Issue with reading settings JSON, so create one/write new one
 		WriteSettings(settings)
 
 	return(settings)
@@ -90,7 +94,7 @@ def ReadStates():
 
 	# Read all lines of states.json into an list(array)
 	try:
-		json_data_file = open("states.json", "r")
+		json_data_file = open(states_file, "r")
 		json_data_string = json_data_file.read()
 		states = json.loads(json_data_string)
 		json_data_file.close()
@@ -106,8 +110,15 @@ def WriteStates(states):
 	# Write all control states to JSON file
 	# *****************************************
 	json_data_string = json.dumps(states)
-	with open("states.json", 'w') as settings_file:
-		settings_file.write(json_data_string)
+	with open(states_file, 'w') as json_data_file:
+		json_data_file.write(json_data_string)
+		
+	# Set world writable so both root and pi user can modify	
+	try:
+		os.chmod(states_file, 0o666)
+	except(IOError, OSError):
+		pass # Can not change chmod if not root or owner
+
 
 def ReadLog():
 	# *****************************************
