@@ -24,6 +24,11 @@
     <!-- Favicon -->
     <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon" type="image/x-icon" />
 
+    <!-- Apple Icons  -->
+    <link rel="apple-touch-icon"  sizes="96x96" href="{{ url_for('static', filename='img/launcher-icon-2x.png') }}"/>
+    <link rel="apple-touch-icon"  sizes="144x144" href="{{ url_for('static', filename='img/launcher-icon-3x.png') }}"/>
+    <link rel="apple-touch-icon"  sizes="192x192" href="{{ url_for('static', filename='img/launcher-icon-4x.png') }}"/>
+
     <!-- Script to refresh status of door -->
     <script type="text/javascript">
   	setInterval("$('#refresh_status_button').load('/' + ' #refresh_status_button');", 1000);
