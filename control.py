@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # *****************************************
 # Garage Door Control Python script
 # *****************************************
@@ -17,10 +18,10 @@ import datetime
 import os
 import json
 import smtplib
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
-import urllib2
-import urllib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import urllib.request, urllib.parse, urllib.error
+
 import RPi.GPIO as GPIO
 from common import *
 
@@ -120,13 +121,13 @@ def SendPushoverNotification(settings,notifyevent):
 
 		url = 'https://api.pushover.net/1/messages.json'
 		try:
-			request = urllib2.Request(url, json.dumps(data), {'Content-Type': 'application/json'})
-			response = urllib2.urlopen(request)
+			request = urllib.request.Request(url, json.dumps(data), {'Content-Type': 'application/json'})
+			response = urllib.request.urlopen(request)
 			WriteLog(subjectmessage + ". Pushover notification sent to: " + user.strip())
 
-		except urllib2.HTTPError as e:
+		except urllib.error.HTTPError as e:
 			WriteLog("Pushover Notification to %s failed: %s" % (user, e))
-		except urllib2.URLError as e:
+		except urllib.error.URLError as e:
 			WriteLog("Pushover Notification to %s failed: %s" % (user, e))
 		except Exception as e:
 			WriteLog("Pushover Notification to %s failed: %s" % (user, e))
@@ -147,15 +148,15 @@ def SendIFTTTNotification(settings,notifyevent):
 		query_args = {}
 
 	try:
-		postdata = urllib.urlencode(query_args)
+		postdata = urllib.parse.urlencode(query_args).encode("utf-8")
 
-		request = urllib2.Request(url,postdata)
-		response = urllib2.urlopen(request)
+		request = urllib.request.Request(url,postdata)
+		response = urllib.request.urlopen(request)
 		WriteLog("IFTTT Notification Success: " + notifyevent)
-	except urllib2.HTTPError:
-		WriteLog("IFTTT Notification Failed: " + notifyevent)
-	except urllib2.URLError:
-		WriteLog("IFTTT Notification Failed: " + notifyevent)
+	except urllib.error.HTTPError:
+		WriteLog("IFTTT Notification Failed HTTP: " + notifyevent)
+	except urllib.error.URLError:
+		WriteLog("IFTTT Notification Failed URL: " + notifyevent)
 	except:
 		WriteLog("IFTTT Notification Failed: " + notifyevent)
 
@@ -185,8 +186,8 @@ def CheckDoorState(states, settings):
 	# Function run from Readstates()
 	# *****************************************
 	global timer_start
-        global reminder_timer_start
-        global opened_at
+	global reminder_timer_start
+	global opened_at
 
 	if (GPIO.input(switch_pin) == True and states['inputs']['switch'] != True):
 		states['inputs']['switch'] = True
