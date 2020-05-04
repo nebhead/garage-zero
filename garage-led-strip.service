@@ -1,0 +1,12 @@
+[Unit]
+Description=garage-led-strip service.
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/garage-zero
+ExecStart=/usr/bin/python garage-led-strip.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
