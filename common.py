@@ -5,13 +5,14 @@ import json
 
 # Storage for Door States. 
 # On Raspberry Pi /var/tmp is ram storage
-states_file = "/var/tmp/states.json"
+states_file = "/tmp/states.json"
 
 def DefaultSettings():
 	settings = {}
 
 	settings['misc'] = {
 		'PublicURL': '',
+		'theme': 'default',
 	}
 
 	settings['email'] = {
@@ -27,6 +28,7 @@ def DefaultSettings():
 	settings['notification'] = {
 		'minutes': 0, # Once-off notification that the door is open
 		'reminder': 0, # Repeated notification that the door is still open
+		'notify_on_open': "off",
 	}
 
 	settings['ifttt'] = {
@@ -37,6 +39,7 @@ def DefaultSettings():
 	settings['pushover'] = {
 		'APIKey': '', # API Key for Pushover notifications
 		'UserKeys': '', # Comma-separated list of user keys
+		'notify_on_open': "off",
 	}
 
 	return settings
@@ -120,7 +123,7 @@ def WriteStates(states):
 		pass # Can not change chmod if not root or owner
 
 
-def ReadLog():
+def ReadLog(num_events=0):
 	# *****************************************
 	# Function: ReadLog
 	# Input: none
@@ -142,15 +145,20 @@ def ReadLog():
 
 	# Initialize event_list list
 	event_list = []
+	event_line_length = len(event_lines)
 
-	# Get number of events
-	num_events = len(event_lines)
+	if ((num_events == 0) or (num_events > event_line_length)):
+		# Get all events in file
+		for x in range(event_line_length):
+			event_list.append(event_lines[x].split(" ",2))
+		num_events = event_line_length
+	elif (num_events < event_line_length): 
+		# Get just the last num_events in list
+		for x in range(event_line_length-num_events, event_line_length):
+			event_list.append(event_lines[x].split(" ",2))
 
-	for x in range(num_events):
-		event_list.append(event_lines[x].split(" ",2))
-
-	# Error handling if number of events is less than 20, fill array with empty
-	if (num_events < 10):
+	# Error handling if number of events is less than 10, fill array with empty
+	if (event_line_length < 10):
 		for line in range((10-num_events)):
 			event_list.append(["--------","--:--:--","---"])
 		num_events = 10

@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="210mm"
@@ -15,32 +12,23 @@
    viewBox="0 0 744.09448819 1052.3622047"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r13725"
-   sodipodi:docname="icon-open-green.svg">
+   inkscape:version="1.0.1 (0767f8302a, 2020-10-17)"
+   sodipodi:docname="icon-closed-blue.svg">
   <defs
      id="defs4">
-    <linearGradient
+    <filter
        inkscape:collect="always"
-       id="linearGradient4160">
-      <stop
-         style="stop-color:#006200;stop-opacity:1"
-         offset="0"
-         id="stop4162" />
-      <stop
-         style="stop-color:#00ff00;stop-opacity:1"
-         offset="1"
-         id="stop4164" />
-    </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient4160"
-       id="linearGradient4166"
-       x1="650"
-       y1="802.36218"
-       x2="-70"
-       y2="12.362205"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.0290511,0,0,0.94081389,-71.208925,298.99791)" />
+       style="color-interpolation-filters:sRGB"
+       id="filter871"
+       x="-5.1925059e-05"
+       width="1.0001039"
+       y="-6.7773263e-05"
+       height="1.0001355">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.011524825"
+         id="feGaussianBlur873" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -50,18 +38,19 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.614138"
-     inkscape:cx="-267.70641"
-     inkscape:cy="300.63337"
+     inkscape:cx="-81.873124"
+     inkscape:cy="756.55696"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      showguides="false"
-     inkscape:window-width="829"
-     inkscape:window-height="392"
-     inkscape:window-x="613"
-     inkscape:window-y="321"
-     inkscape:window-maximized="0"
-     inkscape:snap-global="true">
+     inkscape:window-width="1920"
+     inkscape:window-height="972"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:snap-global="true"
+     inkscape:document-rotation="0">
     <inkscape:grid
        type="xygrid"
        id="grid3336" />
@@ -84,18 +73,21 @@
      id="layer1"
      style="display:inline">
     <rect
-       style="fill:url(#linearGradient4166);fill-opacity:1.0;fill-rule:evenodd;stroke:none;stroke-width:1.7603147px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;image-rendering:auto"
+       style="fill:#0084ff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.7603147px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;image-rendering:auto;opacity:1"
        id="rect3338"
        width="600"
        height="600"
        x="-0.14406556"
        y="452.87128"
        ry="79.999977"
-       inkscape:export-xdpi="21.6"
-       inkscape:export-ydpi="21.6" />
+       inkscape:export-xdpi="28.799999"
+       inkscape:export-ydpi="28.799999" />
     <g
        id="g4149"
-       transform="translate(-0.52606599,0)">
+       transform="translate(-0.52606599,0)"
+       style="filter:url(#filter871);fill:#ffffff;fill-opacity:1;opacity:1"
+       inkscape:export-xdpi="28.799999"
+       inkscape:export-ydpi="28.799999">
       <rect
          inkscape:export-ydpi="90.044128"
          inkscape:export-xdpi="90.044128"

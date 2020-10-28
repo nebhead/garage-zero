@@ -18,6 +18,7 @@ import datetime
 import os
 import json
 import smtplib
+import requests
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import urllib.request, urllib.parse, urllib.error
@@ -59,6 +60,8 @@ def SendEmail(settings, notifyevent):
 	else:
 		notifymessage = "Whoops! GarageZero had the following unhandled notify event: " + notifyevent + " at " + now
 		subjectmessage = "GarageZero: Unknown Notification at " + str(now)
+
+	notifymessage += "\n\nCheck: " + settings['misc']['PublicURL']
 
 	try:
 		fromaddr = settings['email']['FromEmail']
@@ -105,32 +108,29 @@ def SendPushoverNotification(settings,notifyevent):
 		notifymessage = "GarageZero wants you to know that your garage door was closed at " + now
 		subjectmessage = "GarageZero: Closed at " + str(now)
 	elif notifyevent == "GarageEvent_Notify_on_Open":
-		return # don't send Pushover notifications for these
+		notifymessage = "GarageZero wants you to know that your garage door was just opened at " + now
+		subjectmessage = "GarageZero: Opened at " + str(now)
 	else:
 		notifymessage = "Whoops! GarageZero had the following unhandled notify event: " + notifyevent + " at " + now
 		subjectmessage = "GarageZero: Unknown Notification at " + str(now)
-
+	
+	url = 'https://api.pushover.net/1/messages.json'
 	for user in settings['pushover']['UserKeys'].split(','):
-		data = {
-			"token": settings['pushover']['APIKey'],
-			"user": user.strip(),
-			"message": notifymessage,
-			"title": subjectmessage,
-			"url": settings['misc']['PublicURL'],
-		}
-
-		url = 'https://api.pushover.net/1/messages.json'
 		try:
-			request = urllib.request.Request(url, json.dumps(data), {'Content-Type': 'application/json'})
-			response = urllib.request.urlopen(request)
+			r = requests.post(url, data={
+				"token": settings['pushover']['APIKey'],
+				"user": user.strip(),
+				"message": notifymessage,
+				"title": subjectmessage,
+				"url": settings['misc']['PublicURL']
+			})
+			WriteLog('Pushover Response: ' + r.text)
 			WriteLog(subjectmessage + ". Pushover notification sent to: " + user.strip())
 
-		except urllib.error.HTTPError as e:
-			WriteLog("Pushover Notification to %s failed: %s" % (user, e))
-		except urllib.error.URLError as e:
-			WriteLog("Pushover Notification to %s failed: %s" % (user, e))
 		except Exception as e:
 			WriteLog("Pushover Notification to %s failed: %s" % (user, e))
+		except:
+			WriteLog("Pushover Notification to %s failed for unknown reason." % (user))
 
 
 def SendIFTTTNotification(settings,notifyevent):
@@ -148,17 +148,10 @@ def SendIFTTTNotification(settings,notifyevent):
 		query_args = {}
 
 	try:
-		postdata = urllib.parse.urlencode(query_args).encode("utf-8")
-
-		request = urllib.request.Request(url,postdata)
-		response = urllib.request.urlopen(request)
-		WriteLog("IFTTT Notification Success: " + notifyevent)
-	except urllib.error.HTTPError:
-		WriteLog("IFTTT Notification Failed HTTP: " + notifyevent)
-	except urllib.error.URLError:
-		WriteLog("IFTTT Notification Failed URL: " + notifyevent)
+		r = requests.post(url, data=query_args)
+		WriteLog("IFTTT Notification Success: " + r.text)
 	except:
-		WriteLog("IFTTT Notification Failed: " + notifyevent)
+		WriteLog("IFTTT Notification Failed: " + r.text)
 
 
 def SendNotification(settings,notifyevent):
@@ -197,7 +190,7 @@ def CheckDoorState(states, settings):
 		if(settings['notification']['minutes'] > 0):
 			timer_start = time.time() # Set start time for timer
 			opened_at = timer_start # Note time the door was actually opened
-		if(settings['ifttt']['notify_on_open'] == "on"):
+		if(settings['notification']['notify_on_open'] == "on"):
 			notifyevent = "GarageEvent_Notify_on_Open"
 			SendNotification(settings,notifyevent)
 		time.sleep(1)

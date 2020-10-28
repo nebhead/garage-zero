@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, make_response
+from flask import Flask, request, render_template, make_response, redirect
 import time
 import datetime
 import os
@@ -8,33 +8,31 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-	door_history, events = ReadLog()
+	settings = ReadSettings()
+	return render_template('index.html', pagetheme=settings['misc']['theme'])
 
+@app.route('/status')
+def doorstatus():
 	states = ReadStates()
+	return render_template('doorstatus.html', state=states['inputs']['switch'])
 
-	if(states['inputs']['switch'] == True):
-		door_state = True
-	else:
-		door_state = False
-
-	return render_template('index.html', state=door_state, events=events, door_history=door_history)
+@app.route('/shortlog')
+def shortlog():
+	door_history, events = ReadLog(10)
+	return render_template('shortlog.html', door_history=door_history, events=events)
 
 @app.route('/button')
 def button():
-
 	states = ReadStates()
 	states['outputs']['button'] = True  		# Button pressed - Set state to 'on'
 	WriteStates(states)		# Write button press to file
-
-	return render_template('button.html')
+	return redirect('/')
 
 @app.route('/history')
 def history():
-
+	settings = ReadSettings()
 	door_history, events = ReadLog()
-
-	return render_template('door-log.html', door_history=door_history, events=events)
-
+	return render_template('history.html', door_history=door_history, events=events, pagetheme=settings['misc']['theme'])
 
 @app.route('/admin/<action>', methods=['POST','GET'])
 @app.route('/admin', methods=['POST','GET'])
@@ -48,7 +46,7 @@ def admin(action=None):
 		os.system("sleep 3 && sudo reboot &")
 
 		#Show Reboot Splash
-		return render_template('shutdown.html', action=action)
+		return render_template('shutdown.html', action=action, pagetheme=settings['misc']['theme'])
 
 	if action == 'shutdown':
 		event = "Shutdown Requested."
@@ -56,7 +54,7 @@ def admin(action=None):
 		os.system("sleep 3 && sudo shutdown -h now &")
 
 		#Show Shutdown Splash
-		return render_template('shutdown.html', action=action)
+		return render_template('shutdown.html', action=action, pagetheme=settings['misc']['theme'])
 
 	if (request.method == 'POST') and (action == 'settings'):
 		response = request.form
@@ -116,12 +114,12 @@ def admin(action=None):
 				print("IFTTT API Key: " + response['iftttapi'])
 				settings['ifttt']['APIKey'] = response['iftttapi']
 
-		settings['ifttt']['notify_on_open'] = "off"  # Turn off notify_on_open if no response from POST
+		settings['notification']['notify_on_open'] = "off"  # Turn off notify_on_open if no response from POST
 
 		if('notify_on_open' in response):
 			if(response['notify_on_open']!=''):
 				print("Notify on Open: " + response['notify_on_open'])
-				settings['ifttt']['notify_on_open'] = response['notify_on_open']
+				settings['notification']['notify_on_open'] = response['notify_on_open']
 
 		if('pushover_apikey' in response):
 			if(response['pushover_apikey']!=settings['pushover']['APIKey']):
@@ -133,6 +131,10 @@ def admin(action=None):
 				print("Pushover User keys: " + response['pushover_userkeys'])
 				settings['pushover']['UserKeys'] = response['pushover_userkeys']
 
+		if('theme' in response):
+			print(response['theme'])
+			settings['misc']['theme'] = response['theme']
+
 		WriteSettings(settings)
 		event = "Settings Updated."
 		WriteLog(event)
@@ -141,7 +143,7 @@ def admin(action=None):
 
 	cpuinfo = os.popen('cat /proc/cpuinfo').readlines()
 
-	return render_template('admin.html', action=action, uptime=uptime, cpuinfo=cpuinfo, settings=settings)
+	return render_template('admin.html', action=action, uptime=uptime, cpuinfo=cpuinfo, settings=settings, pagetheme=settings['misc']['theme'])
 
 @app.route('/manifest')
 def manifest():

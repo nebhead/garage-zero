@@ -1,0 +1,33 @@
+
+<div class="row justify-content-center">
+        {% if state %}
+        <div class="card bg-danger shadow" style="width: 18rem;">
+        {% else %}
+        <div class="card bg-success shadow" style="width: 18rem;">
+        {% endif %}
+            <div class="card-body text-center">
+                {% if state %}
+                <button type="submit" class="btn btn-default"><img src="{{ url_for('static', filename='img/dooropen.png') }}" alt="Press to Close" width="144" height="144"></button>
+                {% else %}
+                <button type="submit" class="btn btn-default"><img src="{{ url_for('static', filename='img/doorclosed.png') }}" alt="Press to Open" width="144" height="144"></button>
+                {% endif %}
+            </div>
+        </div>
+</div>
+<br>
+
+<div class="row justify-content-center">
+    {% if state %}
+    <div class="card bg-danger shadow" style="width: 18rem;">
+    {% else %}
+    <div class="card bg-success shadow" style="width: 18rem;"> 
+    {% endif %}
+        <div class="card-body text-center text-white">
+        {% if state %}
+            Door Status: <strong>OPEN <i class="fas fa-lock-open"></i></strong>
+        {% else %}
+            Door Status: <strong>CLOSED <i class="fas fa-lock"></i></strong>
+        {% endif %}
+        </div>
+    </div>
+</div>

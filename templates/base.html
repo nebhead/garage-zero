@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% block head %} {% endblock %}
+
+    <!-- Bootstrap CSS -->
+    {% if pagetheme == 'bootstrap' %}
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
+    {% elif pagetheme == 'flatly' %}
+    <link href="{{ url_for('static', filename='css/bootstrap-flatly.css') }}" rel="stylesheet">
+    {% elif pagetheme == 'darkly' %}
+    <link href="{{ url_for('static', filename='css/bootstrap-darkly.css') }}" rel="stylesheet">
+    {% else %}
+    <link href="{{ url_for('static', filename='css/bootstrap-flatly.css') }}" rel="stylesheet">
+    {% endif %}
+
+    <!-- WebApp Manifest -->
+    <link rel="manifest" href="{{ url_for('manifest') }}">
+
+    <!-- Favicon -->
+    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon" type="image/x-icon" />
+    
+    <!-- Apple Icons  -->
+    <link rel="apple-touch-icon"  sizes="96x96" href="{{ url_for('static', filename='img/launcher-icon-2x.png') }}"/>
+    <link rel="apple-touch-icon"  sizes="144x144" href="{{ url_for('static', filename='img/launcher-icon-3x.png') }}"/>
+    <link rel="apple-touch-icon"  sizes="192x192" href="{{ url_for('static', filename='img/launcher-icon-4x.png') }}"/>
+    
+    <!-- Page Title  -->
+    <title>{% block title %} {% endblock %}</title>
+  </head>
+  <body>
+        <!-- Navbar Header -->
+        <nav class="navbar sticky-top navbar-dark bg-primary">
+
+            <a class="navbar-brand" href="/">
+                <b><i class="fas fa-home"></i>&nbsp;Garage<i class="text-success">Zero</i></b></a>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="nav navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/"><i class="fas fa-tachometer-alt"></i>&nbsp;Dashboard</a>
+                        </li>
+                            <a class="nav-link" href="/history"><i class="fas fa-history"></i>&nbsp;History</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin"><i class="fas fa-cogs"></i>&nbsp;Settings & Admin</a>
+                        </li>
+                    </ul>
+                </div>
+        </nav><br>
+        {% block notify %} {% endblock %}<br>
+        {% block content %} {% endblock %}<br>
+        <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+        <script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+        <!-- Font Awesome -->
+        <script src="{{ url_for('static', filename='js/all.js') }}"></script>
+        {% block scripts %} {% endblock %}
+  </body>
+</html>

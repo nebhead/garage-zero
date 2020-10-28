@@ -1,7 +1,6 @@
 # Garage-Zero
 
-## Raspberry Pi Zero based Garage Door Control / Status via Web Based Interface using Flask / Gunicorn / nginx
-##### Also uses Bootstrap (http://getbootstrap.com/)
+## Raspberry Pi Zero based Garage Door Control & Status
 
 ***Note:*** *This project is continuously evolving, and thus this readme will likely be improved over time, as I find the inspiration to make adjustments.  That being said, I'm sure there will be many errors that I have overlooked or sections that I haven't updated.*
 
@@ -21,11 +20,11 @@ Pressing the hamburger icon in the upper right of the interface, allows you to g
 
 ![History](documents/images/screenshot-1.jpg)
 
-Pressing the hamburger icon in the upper right of the interface, allows you to also access to the administration screen. This interface allows you to configure the notification settings (i.e. e-mail and/or IFTTT notifications).
+Pressing the hamburger icon in the upper right of the interface, allows you to also access to the administration screen. This interface allows you to configure the notification settings (i.e. e-mail, IFTTT notifications, and Pushover notifications).
 
 ![Admin & Settings](documents/images/screenshot-2.jpg)
 
-Scrolling down gives you more information about the system hardware, and the uptime.  
+Scrolling down gives you the ability to select from a few different themes including a 'dark mode' for those times when you don't want to blind yourself at night.  Then more system information following the theme settings.  
 
 ![Admin 2](documents/images/screenshot-3.jpg)
 
@@ -126,7 +125,7 @@ View of the magnetic switch, mounted to the top of the garage door.  The wires c
 
 ## Software Installation:
 
-### Walkthrough Installation Video
+### Walkthrough Installation Video (for old version)
 
 Added a walkthrough of the installation instructions on [youtube](https://youtu.be/OK_EWe1pKeE).  You'll probably still want to refer to the below instructions, but it's nice as a reference to see the install process in action.  
 
@@ -160,11 +159,12 @@ sudo raspi-config
 + Set timezone
 + Replace Hostname with a unique hostname ('i.e. garage-zero')
 
-### Automatic Software Installation (ALPHA)
+### Automatic Software Installation (Recommended)
 
-I've created a script to install this automatically, but it is in ALPHA testing.  Your mileage may vary, and it's still recommended to try the below Manual Install.
+I've created a script to install this automatically and I believe it will work well with at least Raspberry Pi OS Buster (08-2020).  Your mileage may vary, and if you experience any trouble try the below Manual Install.
 
 After you've done the above steps to configure your raspberry pi, at the command line type the following:
+
 
 ```
 curl https://raw.githubusercontent.com/nebhead/garage-zero/master/auto-install/install.sh | bash
@@ -172,7 +172,12 @@ curl https://raw.githubusercontent.com/nebhead/garage-zero/master/auto-install/i
 
 Follow the onscreen prompts to complete the installation.  At the end of the script it will reboot, so just be aware of this.  
 
-### Manual Software installation (Recommended)
+### Manual Software installation (If the Auto Install Fails)
+
+#### Make the /tmp directory in RAM based storage
+```
+echo "tmpfs /tmp  tmpfs defaults,noatime 0 0" | sudo tee -a /etc/fstab > /dev/null
+```
 
 #### Give pi user access to the GPIO pins
 ```
@@ -183,8 +188,8 @@ sudo adduser pi gpio
 ```
 sudo apt update
 sudo apt upgrade
-sudo apt install python-pip nginx git gunicorn supervisor -y
-sudo pip install flask
+sudo apt install python3-dev python3-pip python3-rpi.gpio nginx git gunicorn3 supervisor -y
+sudo pip3 install flask
 git clone https://github.com/nebhead/garage-zero
 ```
 
@@ -211,10 +216,10 @@ sudo service nginx restart
 
 ```
 # Move into garage-zero install directory
-cd ~/garage-zero
+cd ~/garage-zero/supervisor
 
 # Copy configuration files (control.conf, webapp.conf) to supervisor config directory
-# NOTE: If you used a different directory for garage-zero then make sure you edit the *.conf files appropriately
+# NOTE: These files all assume you are using the Pi user and standard install directory.  If you used a different directory for garage-zero then make sure you edit the *.conf files appropriately
 sudo cp *.conf /etc/supervisor/conf.d/
 
 # If supervisor isn't already running, startup Supervisor
@@ -257,6 +262,10 @@ Add the following line to the end of the file:
 ```
 Then press CTRL-O to write out to the file the CTRL-X to exit the program.  
 
+### Note on Addons
+
+We've had one user submitted add-on which includes both camera integration and LED lighting.  I've added an addon folder for the necessary files and documentation to supoport addons.  If we have any additional features that are user submitted (and not part of the base install) this is the right place to include them.  
+
 ## Using GarageZero
 If you've configured the supervisord correctly, GarageZero scripts should run upon a reboot.  Once the system is up and running, you should be able to access the WebUI via a browser on your smart phone, tablet or PC device.  
 
@@ -296,6 +305,8 @@ First, navigate to the instance of GarageZero in your Chrome browser on your pho
 Then, when the new dialog box pops up, you will have the opportunity to rename the application, or keep the default.
 
 ![Rename the application](documents/images/screenshot-6.jpg)
+![Rename the application](documents/images/screenshot-6a.jpg)
+![Rename the application](documents/images/screenshot-6b.jpg)
 
 And there you have it, you've not only created a quick link to your garage door web-app, but you've also created a pseudo application at the same time.
 

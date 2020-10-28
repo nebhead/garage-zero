@@ -38,9 +38,17 @@ r=$(( r < 20 ? 20 : r ))
 c=$(( c < 70 ? 70 : c ))
 
 # Display the welcome dialog
-whiptail --msgbox --backtitle "Welcome" --title "Garage-Zero Automated Installer" "This installer will transform your Raspberry Pi into a smart garage door controller.  NOTE: This installer is intended to be run on a fresh install of Raspbian Lite Stretch.  This script is currently in Alpha testing so there may be bugs." ${r} ${c}
+whiptail --msgbox --backtitle "Welcome" --title "Garage-Zero Automated Installer" "This installer will transform your Raspberry Pi into a smart garage door controller.  NOTE: This installer is intended to be run on a fresh install of Raspberry Pi OS (Buster).  This script is currently in Alpha testing so there may be bugs." ${r} ${c}
 
 # Starting actual steps for installation
+clear
+echo "*************************************************************************"
+echo "**                                                                     **"
+echo "**      Setting /tmp to RAM based storage in /etc/fstab                **"
+echo "**                                                                     **"
+echo "*************************************************************************"
+echo "tmpfs /tmp  tmpfs defaults,noatime 0 0" | sudo tee -a /etc/fstab > /dev/null
+
 clear
 echo "*************************************************************************"
 echo "**                                                                     **"
@@ -63,8 +71,8 @@ echo "**                                                                     **"
 echo "**      Installing Dependancies... (This could take several minutes)   **"
 echo "**                                                                     **"
 echo "*************************************************************************"
-$SUDO apt install python-pip nginx git gunicorn supervisor -y
-$SUDO pip install flask
+$SUDO apt install python3-dev python3-pip python3-rpi.gpio nginx git gunicorn3 supervisor -y
+$SUDO pip3 install flask
 
 # Grab project files
 clear
@@ -107,6 +115,7 @@ echo "*************************************************************************"
 
 # Copy configuration files (control.conf, webapp.conf) to supervisor config directory
 # NOTE: If you used a different directory for garage-zero then make sure you edit the *.conf files appropriately
+cd ~/garage-zero/supervisor
 $SUDO cp *.conf /etc/supervisor/conf.d/
 
 SVISOR=$(whiptail --title "Would you like to enable the supervisor WebUI?" --radiolist "This allows you to check the status of the supervised processes via a web browser, and also allows those processes to be restarted directly from this interface. (Recommended)" 20 78 2 "ENABLE_SVISOR" "Enable the WebUI" ON "DISABLE_SVISOR" "Disable the WebUI" OFF 3>&1 1>&2 2>&3)
@@ -134,10 +143,11 @@ echo "**      Configuring Crontab for log backups...                         **"
 echo "**                                                                     **"
 echo "*************************************************************************"
 
-crontab -l > my-crontab
+cd ~/garage-zero
+$SUDO crontab -l > my-crontab
 # Add the following line...
 echo "0 0 1 * * cd /home/pi/garage-zero/logs && sh backup.sh" >> my-crontab
-crontab my-crontab
+$SUDO crontab my-crontab
 rm my-crontab
 
 # Rebooting

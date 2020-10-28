@@ -1,334 +1,333 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-  <title>Garage Door App</title>
+{% extends 'base.html' %}
 
-  <!-- Bootstrap -->
-  <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
-  <!-- Bootstrap theme -->
-  <link href="{{ url_for('static', filename='css/bootstrap-theme.min.css') }}" rel="stylesheet">
+{% block title %} Admin & Settings {% endblock %}
 
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-
-  <!-- Include all compiled plugins (below), or include individual files as needed -->
-  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-
-  <!-- WebApp Manifest -->
-  <link rel="manifest" href="{{ url_for('manifest') }}">
-
-  <!-- Favicon -->
-  <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon" type="image/x-icon" />
-
-</head>
-
-<body>
-  <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#funtime">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-home"></span> Garage Zero</a>
-      </div>
-      <div id="funtime" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="/"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
-          <li><a href="/history"><span class="glyphicon glyphicon-list-alt"></span> History</a></li>
-          <li><a href="/admin"><span class="glyphicon glyphicon-cog"></span> Admin</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-  <br>
-  <br>
-  <br>
-
-  <div class="container theme-showcase" role="main">
-
-  <!-- Success -->
+{% block notify %}
+<!-- Success -->
   {% if (action == "settings") %}
-    <div class="alert alert-success" role="alert">
-      <span class="glyphicon glyphicon-ok"></span>
-      <b> Settings Updated.</b>
+    <div class="container">
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <b> Settings Updated.</b>
+        </div>
     </div>
   {% endif %}
+{% endblock %}
 
-  <!-- Settings Panel -->
-  <form name="input_settings" action="/admin/settings" method="POST">
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title">Notification Settings</h3>
-      </div>
-      <div class="panel-body">
+{% block content %}  
+<div class="container" role="main">
 
-        <i>You can optionally get an notifications if the door is open for a certain amount of time.  Just fill in the account information here, and the specified timeout in minutes after which you'll get a notification letting you know your garage door is open.</i>
-        <br><br>
-
-        <!-- Notification Timeout -->
-        <div class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-hourglass"></i> Notify Timeout(mins): </span>
-          <input id="timeout" type="number" min="0" max="120" class="form-control" name="timeout" placeholder="{{settings['notification']['minutes']}}">
+<!-- Notifications Settings Card -->
+<form name="notify" action="/admin/settings" method="POST">
+    <div class="card shadow">
+        <div class="card-header bg-info">
+            <i class="fas fa-bell"></i>&nbsp; Notify Settings
         </div>
-        <h6><b>Note:</b><i>Timeout of zero (0) disables notifications</i></h6>
-
-        <!-- Reminder Notification Timeout -->
-        <div class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-hourglass"></i> Reminder Timeout(mins): </span>
-          <input id="reminder" type="number" min="0" max="120" class="form-control" name="reminder" placeholder="{{settings['notification']['reminder']}}">
-        </div>
-        <h6><b>Note:</b><i>This notification will be sent repeatedly at the specified interval until the door is closed. A setting of zero (0) disables this.</i></h6>
-        <br>
-
-        <!-- URL -->
-        <div class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-hourglass"></i> System URL: </span>
-          <input id="public_url" type="text" class="form-control" name="public_url" placeholder="{{settings['misc']['PublicURL']}}">
-        </div>
-        <h6><b>Note:</b><i>The public URL of your Garage Zero system, included in notifications.</i></h6>
-        <br>
-
-        <!-- Email notifications -->
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">Email notifications</h3>
-          </div>
-          <div class="panel-body">
-
-            <!-- From E-mail Entry -->
-            <div class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-export"></i> FROM E-mail: </span>
-              <input id="from_email" type="text" class="form-control" name="from_email" placeholder="{{settings['email']['FromEmail']}}">
+        <div class="card-body">
+            <i>You can optionally get an notifications if the door is open for a certain amount of time.  Just fill in the account information here, and the specified timeout in minutes after which you'll get a notification letting you know your garage door is open.</i>
+            <br><br>
+   
+            <!-- Notification Timeout -->
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-stopwatch"></i>&nbsp; Notify Timeout(mins)</span>
+                </div>
+                <input id="timeout" type="type" min="0" max="120" class="form-control" name="timeout" placeholder="{{settings['notification']['minutes']}}"><br>
             </div>
-            <h6><b>Note:</b><i>Leaving "from" e-mail blank disables e-mail notifications</i></h6>
+            <h6><b>Note:</b><i>Timeout of zero (0) disables notifications</i></h6>
 
-            <!-- To E-mail Entry -->
-            <div class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-import"></i> TO E-mail: </span>
-              <input id="to_email" type="text" class="form-control" name="to_email" placeholder="{{settings['email']['ToEmail']}}">
+            <!-- Reminder Notification Timeout -->
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-stopwatch"></i>&nbsp; Reminder Timeout(mins)</span>
+                </div>
+                <input id="reminder" type="number" min="0" max="120" class="form-control" name="reminder" placeholder="{{settings['notification']['reminder']}}"><br>
             </div>
-            <h6><b>Note:</b><i>If you want to send notification to multiple e-mails, then seperate with a comma (','). </i></h6>
+            <h6><b>Note:</b><i>This notification will be sent repeatedly at the specified interval until the door is closed. A setting of zero (0) disables this.</i></h6>
 
-            <!-- SMTP Server -->
-            <div class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i> SMTP Server: </span>
-              <input id="server" type="text" class="form-control" name="server" placeholder="{{settings['email']['SMTPServer']}}">
+            <!-- Public URL -->
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-globe"></i>&nbsp; System URL: </span>
+                </div>
+                <input id="public_url" type="text" class="form-control" name="public_url" placeholder="{{settings['misc']['PublicURL']}}"><br>
             </div>
-            <br>
-
-            <!-- SMTP Port -->
-            <div class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-resize-small"></i> SMTP Port: </span>
-              <input id="port" type="number" class="form-control" name="port" placeholder="{{settings['email']['SMTPPort']}}">
-            </div>
-
-            <div class="checkbox">
-              {% if settings['email']['UseTLS'] %}
-                <label><input type="checkbox" id="use_tls" name="use_tls" checked>Use SSL/TLS</label>
-              {% else %}
-                <label><input type="checkbox" id="use_tls" name="use_tls" unchecked>Use SSL/TLS</label>
-              {% endif %}
-            </div>
-
-            <br>
-
-            <!-- Password Entry -->
-            <div class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i> Username: </span>
-              <input id="username" type="text" class="form-control" name="username" placeholder="{{settings['email']['Username']}}">
-            </div>
-            <h6><b>Note:</b><i>Used for server login.</i></h6>
-
-            <!-- Password Entry -->
-            <div class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i> Password: </span>
-              <input id="password" type="password" class="form-control" name="password" placeholder="********">
-            </div>
-          </div>
-        </div>
-
-        <!-- IFTTT -->
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">IFTTT notifications</h3>
-          </div>
-          <div class="panel-body">
-
-            <!-- IFTTT API Key -->
-            <div class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i> IFTTT API Key: </span>
-              <input id="iftttapi" type="text" class="form-control" name="iftttapi" placeholder="{{settings['ifttt']['APIKey']}}">
-            </div>
-            <h6><b>Note:</b><i>Use IFTTT Notification App.  Set to 0 to disable.</i></h6>
-
+            <h6><b>Note:</b><i>The public URL of your Garage Zero system, included in notifications.</i></h6>
+            
             <!-- Notify on Open -->
-            <div class="checkbox">
-              {% if settings['ifttt']['notify_on_open'] == "on" %}
-                <label><input type="checkbox" id="notify_on_open" name="notify_on_open" checked>Notify on Door Open</label>
-              {% else %}
-                <label><input type="checkbox" id="notify_on_open" name="notify_on_open" unchecked>Notify on Door Open</label>
-              {% endif %}
+            <div class="custom-control custom-switch">
+                {% if settings['notification']['notify_on_open'] == "on" %}
+                <input type="checkbox" class="custom-control-input" id="notify_on_open" name="notify_on_open" checked>
+                <label class="custom-control-label" for="notify_on_open">Notify on door open.</label>
+                {% else %}
+                <input type="checkbox" class="custom-control-input" id="notify_on_open" name="notify_on_open" unchecked>
+                <label class="custom-control-label" for="notify_on_open">Notify on door open.</label>
+                {% endif %}
             </div>
-            <h6><b>Note:</b><i>IFTTT Notification on Door Open.</i></h6>
-          </div>
-        </div>
-
-        <!-- Pushover settings -->
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">Pushover notifications</h3>
-          </div>
-          <div class="panel-body">
-
-            <!-- API Key -->
-            <div class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i> API Key: </span>
-              <input id="pushover_apikey" type="text" class="form-control" name="pushover_apikey" value="{{settings['pushover']['APIKey']}}">
-            </div>
+            <h6><b>Note:</b><i>IFTTT/Pushover Notification on Door Open.</i></h6>
             <br>
 
-            <!-- API Key -->
-            <div class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i> User Keys: </span>
-              <input id="pushover_userkeys" type="text" class="form-control" name="pushover_userkeys" value="{{settings['pushover']['UserKeys']}}">
+            <!-- E-mail Settings Card -->
+            <div class="card shadow">
+                <div class="card-header bg-info">
+                    <i class="fas fa-envelope-open-text"></i>&nbsp; E-mail Settings
+                </div>
+                <div class="card-body">
+                    <!-- From E-mail Address -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-at"></i>&nbsp; From E-mail Address: </span>
+                        </div>
+                        <input id="from_email" type="text" class="form-control" name="from_email" placeholder="{{settings['email']['FromEmail']}}"><br>
+                    </div>
+                    <h6><b>Note:</b><i>Leaving "from" e-mail blank disables e-mail notifications</i></h6>
+
+                    <!-- To E-mail Entry -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-at"></i>&nbsp; TO E-mail: </span>
+                        </div>
+                        <input id="to_email" type="text" class="form-control" name="to_email" placeholder="{{settings['email']['ToEmail']}}">
+                    </div>
+                    <h6><b>Note:</b><i>If you want to send notification to multiple e-mails, then seperate with a comma (','). </i></h6>
+        
+                    <!-- SMTP Server -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-globe"></i>&nbsp; SMTP Server: </span>
+                        </div>
+                        <input id="server" type="text" class="form-control" name="server" placeholder="{{settings['email']['SMTPServer']}}">
+                    </div>
+                    <br>
+        
+                    <!-- SMTP Port -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-globe"></i>&nbsp; SMTP Port: </span>
+                        </div>
+                        <input id="port" type="number" class="form-control" name="port" placeholder="{{settings['email']['SMTPPort']}}">
+                    </div>
+        
+                    <div class="custom-control custom-switch">
+                        {% if settings['email']['UseTLS'] %}
+                        <input type="checkbox" class="custom-control-input" id="use_tls" name="use_tls" checked>
+                        <label class="custom-control-label" for="use_tls">Use SSL/TLS.</label>
+                        {% else %}
+                        <input type="checkbox" class="custom-control-input" id="use_tls" name="use_tls" unchecked>
+                        <label class="custom-control-label" for="use_tls">Use SSL/TLS.</label>
+                        {% endif %}
+                    </div>
+        
+                    <br>
+        
+                    <!-- Username Entry -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-user-tie"></i>&nbsp; Username: </span>
+                        </div>
+                        <input id="username" type="text" class="form-control" name="username" placeholder="{{settings['email']['Username']}}">
+                    </div>
+                    <h6><b>Note:</b><i>Used for server login.</i></h6>
+        
+                    <!-- Password Entry -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-lock"></i>&nbsp; Password: </span>
+                        </div>
+                        <input id="password" type="password" class="form-control" name="password" placeholder="********">
+                    </div>
+                </div>
+            </div><br>
+
+            <!-- IFTTT Settings Card -->
+            <div class="card shadow">
+                <div class="card-header bg-info">
+                    <i class="fas fa-bell"></i>&nbsp; IFTTT Settings
+                </div>
+                <div class="card-body">
+                    <!-- IFTTT API Key -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-key"></i>&nbsp; IFTTT API Key: </span>
+                        </div>    
+                        <input id="iftttapi" type="text" class="form-control" name="iftttapi" placeholder="{{settings['ifttt']['APIKey']}}">
+                    </div>
+                    <h6><b>Note:</b><i>Use IFTTT Notification App.  Set to 0 to disable.</i></h6>
+                </div>
             </div>
-            <h6><b>Note:</b><i>If you want to send notification to multiple users, then seperate with a comma (','). </i></h6>
-
-          </div>
+            <br>
+            
+            <!-- Pushover Settings Card -->
+            <div class="card shadow">
+                <div class="card-header bg-info">
+                    <i class="fas fa-bell"></i>&nbsp; Pushover Settings
+                </div>
+                <div class="card-body">
+                    <!-- API Key -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-key"></i>&nbsp; API Key: </span>
+                        </div>
+                        <input id="pushover_apikey" type="text" class="form-control" name="pushover_apikey" value="{{settings['pushover']['APIKey']}}">
+                    </div>
+                    <br>
+  
+                    <!-- User Keys -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-key"></i>&nbsp; User Keys: </span>
+                        </div>
+                        <input id="pushover_userkeys" type="text" class="form-control" name="pushover_userkeys" value="{{settings['pushover']['UserKeys']}}">
+                    </div>
+                    <h6><b>Note:</b><i>If you want to send notification to multiple users, then seperate with a comma (','). </i></h6>
+                 </div>
+            </div><br>
+        </div> 
+        <!-- Notify Footer w/Submit Button -->
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Save Settings</button>
         </div>
-      </div>
-      <div class="panel-footer">
-        <button type="submit" class="btn btn-default">Save Changes</button>
-      </div>
-
     </div>
+</form><br>
 
-  </form>
+<!-- Theme Settings Card -->
+<form name="theme" action="/admin/settings" method="POST">
+<div class="card shadow">
+    <div class="card-header bg-info">
+        <i class="fas fa-palette"></i>&nbsp; Theme Settings
+    </div>
+    <div class="card-body">
+        <div class="form-group">
+            <label for="sel1">Select a Theme:</label>
+            <select class="form-control" id="theme" name="theme">
+              <option value="default" {% if pagetheme == 'default' %}selected{% endif %}>Default</option>
+              <option value="bootstrap" {% if pagetheme == 'bootstrap' %}selected{% endif %}>Bootstrap</option>
+              <option value="flatly" {% if pagetheme == 'flatly' %}selected{% endif %}>Flatly</option>
+              <option value="darkly" {% if pagetheme == 'darkly' %}selected{% endif %}>Darkly</option>
+            </select>
+        </div>
+    </div>
+    <div class="card-footer">
+        <button type="submit" class="btn btn-primary">Save Settings</button>
+    </div>
+</div>
+</form>
 
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title">System Info</h3>
-      </div>
-      <div class="panel-body">
-        <b>Raspberry Pi Zero</b><br>
+<br>
+
+<!-- System Information Card -->
+<div class="card shadow">
+    <div class="card-header bg-info">
+        <i class="fas fa-info-circle"></i>&nbsp; System Information
+    </div>
+    <div class="card-body">
+        <b>CPU Info</b><br>
         {% for line in cpuinfo %}
-          {{ line }}<br>
+        {{ line }}<br>
         {% endfor %}
-      </div>
     </div>
+</div>
+<br>
 
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <h3 class="panel-title">Uptime</h3>
-      </div>
-      <div class="panel-body">{{ uptime }}</div>
+<!-- Uptime Card -->
+<div class="card shadow">
+    <div class="card-header bg-info">
+        <i class="far fa-arrow-alt-circle-up"></i>&nbsp; Uptime
     </div>
+    <div class="card-body">{{ uptime }}</div>
+</div>
+<br>
 
-    <div class="panel panel-danger">
-      <div class="panel-heading">
-        <h3 class="panel-title"> Administration Functions</h3>
-      </div>
-      <div class="panel-body">
-
-        <!-- Reboot -->
-        <form name="input" action="/admin/reboot">
-          <button type="button" class="btn btn-lg btn-warning" data-toggle="modal" data-target="#myModal_reboot">Reboot</button>
-          <!-- Trigger the modal with a button -->
-
-          <!-- Modal -->
-          <div id="myModal_reboot" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-
-              <!-- Modal content-->
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title"><span style="font-size:1.25em;" class="glyphicon glyphicon-warning-sign"></span> Reboot System Confirmation</h4>
-                </div>
-                <div class="modal-body">
-                  <p>Are you sure you would like to reboot?
-                  <br><i>This may leave the system unresponsive for a few minutes.</i></p>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                  <button type="submit" class="btn btn-danger btn-ok">Confirm Reboot</button>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </form>
-
-        <br><br>
-        <!-- Shutdown -->
-        <form name="input" action="/admin/shutdown">
-          <button type="button" class="btn btn-lg btn-danger" data-toggle="modal" data-target="#myModal_shutdown">Shutdown</button>
-          <!-- Trigger the modal with a button -->
-
-          <!-- Modal -->
-          <div id="myModal_shutdown" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-
-              <!-- Modal content-->
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title"><span style="font-size:1.25em;" class="glyphicon glyphicon-warning-sign"></span> Shutdown System Confirmation</h4>
-                </div>
-                <div class="modal-body">
-                  <p>Are you sure you would like to shutdown the system?
-                  <br><i>This will halt the system and shutdown.  It will require a manual restart with the power-button.</i></p>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                  <button type="submit" class="btn btn-danger btn-ok">Confirm Shutdown</button>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </form>
-
-      </div>
+<!-- Administration Functions Card -->
+<div class="card shadow">
+    <div class="card-header bg-danger">
+        <i class="fas fa-power-off"></i>&nbsp; System Power
     </div>
+    <div class="card-body">
+            <!-- Reboot -->
+            <form name="input" action="/admin/reboot">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-outline-warning btn-block shadow" data-toggle="modal" data-target="#rebootModal">
+                    Reboot System
+                </button>
 
-      <!-- *********** Credits *************** -->
-      <div class="panel-group">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h6 class="panel-title">
-              <a data-toggle="collapse" href="#collapse-new">
-                <span class="glyphicon glyphicon-bullhorn"></span> Credits and Licenses...
-                <span class="glyphicon glyphicon-plus-sign pull-right"></span>
-              </a>
-            </h6>
-          </div>
-          <div id="collapse-new" class="panel-collapse collapse">
-            <div class="panel-body">
-              <i>Of course, none of this project would be available without the wonderful and amazing folks below... </i><br>
-              <ul class="list-group">
-                <li class="list-group-item">Bootstrap - Based entirely on Bootstrap and JQuery.  Bootstrap is released under the MIT license and is copyright 2016 Twitter. (<a href="http://getbootstrap.com" target="blank">Bootstrap</a>)</li>
-                <li class="list-group-item">Glyphicons - Created by Jan Kovařík over at GLYPHICONS. (<a href="http://glyphicons.com" target="blank">http://glypicons.com</a>)</li>
-              </ul><br><br>
-              <i>If you enjoy this software and feel the need to donate a cup of coffee, a frosty beer or a bottle of wine to the developer you can click <a href="https://paypal.me/benparmeter" target="blank">here.</a></i>
-            </div>
-          </div>
+                <!-- Reboot Modal -->
+                <div class="modal fade" id="rebootModal" tabindex="-1" role="dialog" aria-labelledby="rebootModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="rebootModalLabel">Reboot</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you would like to reboot the system?
+                                <br><i>Any unsaved data may be lost.</i></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary" name="reboot" value="True">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+            <br>
+            <!-- Shutdown -->
+            <form name="input" action="/admin/shutdown">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-outline-danger btn-block shadow" data-toggle="modal" data-target="#shutdownModal">
+                    Shutdown System
+                </button>
+
+                <!-- Shutdown Modal -->
+                <div class="modal fade" id="shutdownModal" tabindex="-1" role="dialog" aria-labelledby="shutdownModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="shutdownModalLabel">Shutdown</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you would like to shutdown the system?
+                                <br><i>Any unsaved data may be lost.  System must be manually started after a shutdown.</i></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary" name="shutdown" value="True">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
-      </div>
+    </div>
+<br>
 
-      <div class="well">
-        <p style="color:grey">Garage Door Web Application created by <a href="http://parmeter.net/tech">Ben Parmeter</a>, copyright 2017.</p>
-        <p style="color:grey">For administration tasks, system information and licenses <a href="/admin">click here.</a></p>
-      </div>
+<!-- Attributions and Credits -->
+<div class="card shadow">
+    <div class="card-header bg-info">
+        <i class="fas fa-bullhorn"></i>&nbsp; Atributions & Credits
+    </div>
+    <div class="card card-body">
+        <p>Web Application created by <a href="https://parmeter.net/tech" target="blank">Ben Parmeter</a>, copyright 2020. Check out my other projects on <a href="https://github.com/nebhead" target="blank">GitHub.</a></p>
+        <p><i>If you enjoy this software and feel the need to donate a cup of coffee, a frosty beer or a bottle of wine to the developer you can click <a href="https://paypal.me/benparmeter" target="blank">here.</a></i></p>
+        <p><i>Of course, none of this project would be available without the wonderful and amazing folks below... </i></p><br>
+        <ul class="list-group">
+            <li class="list-group-item"><b>Bootstrap</b> - WebUI Based on Bootstrap 4.  Bootstrap is released under the MIT license and is copyright 2018 Twitter. (<a href="http://getbootstrap.com" target="blank">getbootstrap.com</a>)</li>
+            <li class="list-group-item"><b>JQuery</b> - Required by Bootstrap. Copyright JS Foundation and other contributors. Released under MIT license. (<a href="https://jquery.org/license/" target="blank">jquery.org/license</a>)</li>
+            <li class="list-group-item"><b>Popper</b> - Required by Bootstrap. Copyright 2016, 2018 FEDERICO ZIVOLO & CONTRIBUTORS. Released under MIT license. (<a href="https://popper.js.org/" target="blank">popper.js.org</a>)</li>
+            <li class="list-group-item"><b>FontAwesome</b> - Amazing FREE Icons that I use throughout this project.  Copyright Font Awesome.  Released under the Font Awesome Free License. (<a href="https://fontawesome.com/" target="blank">fontawesome.com</a>)(<a href="https://github.com/FortAwesome/Font-Awesome" target="blank">github.com</a>)</li>
+            <li class="list-group-item"><b>BootSwatch</b> - Bootstrap CSS styling.  Copyright 2012-2020 Thomas Park.  Licensed under MIT.  (<a href="https://bootswatch.com/" target="blank">https://bootswatch.com/</a>)</li>
+        </ul>
+    </div>
+</div>
 
-  </div>
+</div> <!-- End of Container -->
 
-</body>
-</html>
+{% endblock %}
