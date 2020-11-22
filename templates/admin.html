@@ -28,33 +28,34 @@
             <br><br>
    
             <!-- Notification Timeout -->
+            <span class="badge badge-warning">NOTE:</span><i class="small"> Timeout of zero (0) disables notifications</i>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="fas fa-stopwatch"></i>&nbsp; Notify Timeout(mins)</span>
                 </div>
                 <input id="timeout" type="type" min="0" max="120" class="form-control" name="timeout" placeholder="{{settings['notification']['minutes']}}"><br>
             </div>
-            <h6><b>Note:</b><i>Timeout of zero (0) disables notifications</i></h6>
 
             <!-- Reminder Notification Timeout -->
+            <span class="badge badge-warning">NOTE:</span><i class="small"> This notification will be sent repeatedly at the specified interval until the door is closed. A setting of zero (0) disables this.</i>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fas fa-stopwatch"></i>&nbsp; Reminder Timeout(mins)</span>
                 </div>
                 <input id="reminder" type="number" min="0" max="120" class="form-control" name="reminder" placeholder="{{settings['notification']['reminder']}}"><br>
             </div>
-            <h6><b>Note:</b><i>This notification will be sent repeatedly at the specified interval until the door is closed. A setting of zero (0) disables this.</i></h6>
 
             <!-- Public URL -->
+            <span class="badge badge-warning">NOTE:</span><i class="small"> The public URL of your Garage Zero system, included in notifications.</i>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fas fa-globe"></i>&nbsp; System URL: </span>
                 </div>
                 <input id="public_url" type="text" class="form-control" name="public_url" placeholder="{{settings['misc']['PublicURL']}}"><br>
             </div>
-            <h6><b>Note:</b><i>The public URL of your Garage Zero system, included in notifications.</i></h6>
             
             <!-- Notify on Open -->
+            <span class="badge badge-warning">NOTE:</span><i class="small"> IFTTT/Pushover Notification on Door Open.</i>
             <div class="custom-control custom-switch">
                 {% if settings['notification']['notify_on_open'] == "on" %}
                 <input type="checkbox" class="custom-control-input" id="notify_on_open" name="notify_on_open" checked>
@@ -64,7 +65,7 @@
                 <label class="custom-control-label" for="notify_on_open">Notify on door open.</label>
                 {% endif %}
             </div>
-            <h6><b>Note:</b><i>IFTTT/Pushover Notification on Door Open.</i></h6>
+
             <br>
 
             <!-- E-mail Settings Card -->
@@ -74,22 +75,22 @@
                 </div>
                 <div class="card-body">
                     <!-- From E-mail Address -->
+                    <span class="badge badge-warning">NOTE:</span><i class="small"> Leaving "from" e-mail blank disables e-mail notifications</i>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-at"></i>&nbsp; From E-mail Address: </span>
                         </div>
                         <input id="from_email" type="text" class="form-control" name="from_email" placeholder="{{settings['email']['FromEmail']}}"><br>
                     </div>
-                    <h6><b>Note:</b><i>Leaving "from" e-mail blank disables e-mail notifications</i></h6>
 
                     <!-- To E-mail Entry -->
+                    <span class="badge badge-warning">NOTE:</span><i class="small"> If you want to send notification to multiple e-mails, then seperate with a comma (','). </i>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-at"></i>&nbsp; TO E-mail: </span>
                         </div>
                         <input id="to_email" type="text" class="form-control" name="to_email" placeholder="{{settings['email']['ToEmail']}}">
                     </div>
-                    <h6><b>Note:</b><i>If you want to send notification to multiple e-mails, then seperate with a comma (','). </i></h6>
         
                     <!-- SMTP Server -->
                     <div class="input-group mb-3">
@@ -121,13 +122,13 @@
                     <br>
         
                     <!-- Username Entry -->
+                    <span class="badge badge-warning">NOTE:</span><i class="small"> Used for server login.</i>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-user-tie"></i>&nbsp; Username: </span>
                         </div>
                         <input id="username" type="text" class="form-control" name="username" placeholder="{{settings['email']['Username']}}">
                     </div>
-                    <h6><b>Note:</b><i>Used for server login.</i></h6>
         
                     <!-- Password Entry -->
                     <div class="input-group mb-3">
@@ -145,14 +146,15 @@
                     <i class="fas fa-bell"></i>&nbsp; IFTTT Settings
                 </div>
                 <div class="card-body">
+
                     <!-- IFTTT API Key -->
+                    <span class="badge badge-warning">NOTE:</span><i class="small"> Use IFTTT Notification App.  Set to 0 to disable.</i>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-key"></i>&nbsp; IFTTT API Key: </span>
                         </div>    
                         <input id="iftttapi" type="text" class="form-control" name="iftttapi" placeholder="{{settings['ifttt']['APIKey']}}">
                     </div>
-                    <h6><b>Note:</b><i>Use IFTTT Notification App.  Set to 0 to disable.</i></h6>
                 </div>
             </div>
             <br>
@@ -173,14 +175,14 @@
                     <br>
   
                     <!-- User Keys -->
-                    <div class="input-group mb-3">
+                    <span class="badge badge-warning">NOTE:</span><i class="small"> If you want to send notification to multiple users, then seperate with a comma (','). </i>
+                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-key"></i>&nbsp; User Keys: </span>
                         </div>
                         <input id="pushover_userkeys" type="text" class="form-control" name="pushover_userkeys" value="{{settings['pushover']['UserKeys']}}">
                     </div>
-                    <h6><b>Note:</b><i>If you want to send notification to multiple users, then seperate with a comma (','). </i></h6>
-                 </div>
+                </div>
             </div><br>
         </div> 
         <!-- Notify Footer w/Submit Button -->
