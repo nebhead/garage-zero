@@ -5,11 +5,20 @@ import os
 from common import *
 
 app = Flask(__name__)
+settings = ReadSettings()
 
-@app.route('/')
+@app.route('/', methods=['POST','GET'])
 def index():
-	settings = ReadSettings()
-	return render_template('index.html', pagetheme=settings['misc']['theme'])
+	global settings
+	if (request.method == 'POST'):
+		response = request.form
+		if('listorder' in response):
+			if(response['listorder'] == 'topdown'):
+				settings['misc']['listorder'] = 'topdown'
+			else:
+				settings['misc']['listorder'] = 'bottomup'
+			WriteSettings(settings)
+	return render_template('index.html', pagetheme=settings['misc']['theme'], settings=settings)
 
 @app.route('/status')
 def doorstatus():
@@ -18,8 +27,9 @@ def doorstatus():
 
 @app.route('/shortlog')
 def shortlog():
+	global settings
 	door_history, events = ReadLog(10)
-	return render_template('shortlog.html', door_history=door_history, events=events)
+	return render_template('shortlog.html', door_history=door_history, events=events, settings=settings)
 
 @app.route('/button')
 def button():
@@ -28,16 +38,25 @@ def button():
 	WriteStates(states)		# Write button press to file
 	return redirect('/')
 
-@app.route('/history')
+@app.route('/history', methods=['POST','GET'])
 def history():
-	settings = ReadSettings()
+	global settings
+	if (request.method == 'POST'):
+		response = request.form
+		if('listorder' in response):
+			if(response['listorder'] == 'topdown'):
+				settings['misc']['listorder'] = 'topdown'
+			else:
+				settings['misc']['listorder'] = 'bottomup'
+			WriteSettings(settings)
 	door_history, events = ReadLog()
-	return render_template('history.html', door_history=door_history, events=events, pagetheme=settings['misc']['theme'])
+	return render_template('history.html', door_history=door_history, events=events, pagetheme=settings['misc']['theme'], settings=settings)
 
 @app.route('/admin/<action>', methods=['POST','GET'])
 @app.route('/admin', methods=['POST','GET'])
 def admin(action=None):
 	states = ReadStates()
+	global settings 
 	settings = ReadSettings()
 
 	if action == 'reboot':

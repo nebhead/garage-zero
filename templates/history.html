@@ -9,6 +9,13 @@
           <div class="card shadow">
             <div class="card-header bg-info"><i class="fas fa-history"></i>&nbsp;Event History (Month)</div>
             <div class="card-body">
+              <form name="listorderselect" method="POST" action="/history">
+                {% if settings['misc']['listorder'] == 'topdown' %}
+                <button class="btn btn-secondary text-light" type="submit" id="listorder" name="listorder" value="bottomup"><i class="fas fa-sort-amount-up-alt"></i> Sort</button>
+                {% else %}
+                <button class="btn btn-secondary text-light" type="submit" id="listorder" name="listorder" value="topdown"><i class="fas fa-sort-amount-down"></i> Sort</button>
+                {% endif %}
+              </form><br>
               <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
@@ -19,7 +26,20 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {% for row in range(events) %}
+                      {% if settings['misc']['listorder'] == 'bottomup' %}
+                        {% for row in range(events) %}
+                        {% if "Button" in door_history[row][2] %}
+                          <tr class="success">
+                        {% else %}
+                          <tr>
+                        {% endif %}
+                        {% for column in range(3) %}
+                        <td> {{ door_history[events-1-row][column] }} </td>
+                        {% endfor %}
+                        </tr>
+                        {% endfor %}
+                      {% else %}
+                        {% for row in range(events) %}
                         {% if "Button" in door_history[row][2] %}
                           <tr class="success">
                         {% else %}
@@ -28,8 +48,9 @@
                         {% for column in range(3) %}
                         <td> {{ door_history[row][column] }} </td>
                         {% endfor %}
-                      </tr>
-                      {% endfor %}
+                        </tr>
+                        {% endfor %}
+                      {% endif %}
                     </tbody>
                 </table>
               </div>

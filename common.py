@@ -13,6 +13,7 @@ def DefaultSettings():
 	settings['misc'] = {
 		'PublicURL': '',
 		'theme': 'default',
+		'listorder': 'topdown', # default list order 'topdown' or 'bottomup'
 	}
 
 	settings['email'] = {
