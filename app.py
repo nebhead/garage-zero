@@ -18,6 +18,13 @@ def index():
 			else:
 				settings['misc']['listorder'] = 'bottomup'
 			WriteSettings(settings)
+		if('24htime' in response): 
+			if(response['24htime'] == 'true'):
+				settings['misc']['24htime'] = True
+			else:
+				settings['misc']['24htime'] = False 
+			WriteSettings(settings)
+
 	return render_template('index.html', pagetheme=settings['misc']['theme'], settings=settings)
 
 @app.route('/status')
@@ -28,7 +35,7 @@ def doorstatus():
 @app.route('/shortlog')
 def shortlog():
 	global settings
-	door_history, events = ReadLog(10)
+	door_history, events = ReadLog(10, twentyfourhtime=settings['misc']['24htime'])
 	return render_template('shortlog.html', door_history=door_history, events=events, settings=settings)
 
 @app.route('/button')
@@ -41,15 +48,25 @@ def button():
 @app.route('/history', methods=['POST','GET'])
 def history():
 	global settings
+
 	if (request.method == 'POST'):
 		response = request.form
+
 		if('listorder' in response):
 			if(response['listorder'] == 'topdown'):
 				settings['misc']['listorder'] = 'topdown'
 			else:
 				settings['misc']['listorder'] = 'bottomup'
 			WriteSettings(settings)
-	door_history, events = ReadLog()
+		if('24htime' in response): 
+			if(response['24htime'] == 'true'):
+				settings['misc']['24htime'] = True
+			else:
+				settings['misc']['24htime'] = False 
+			WriteSettings(settings)
+
+	door_history, events = ReadLog(twentyfourhtime=settings['misc']['24htime'])
+
 	return render_template('history.html', door_history=door_history, events=events, pagetheme=settings['misc']['theme'], settings=settings)
 
 @app.route('/admin/<action>', methods=['POST','GET'])

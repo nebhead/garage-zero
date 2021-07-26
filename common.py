@@ -1,5 +1,5 @@
 import time
-import datetime
+from datetime import datetime
 import os
 import json
 
@@ -14,6 +14,7 @@ def DefaultSettings():
 		'PublicURL': '',
 		'theme': 'default',
 		'listorder': 'topdown', # default list order 'topdown' or 'bottomup'
+		'24htime': True, # default to 24hr time (commonly known as military time in the USA)
 	}
 
 	settings['email'] = {
@@ -124,7 +125,7 @@ def WriteStates(states):
 		pass # Can not change chmod if not root or owner
 
 
-def ReadLog(num_events=0):
+def ReadLog(num_events=0, twentyfourhtime=True):
 	# *****************************************
 	# Function: ReadLog
 	# Input: none
@@ -148,21 +149,24 @@ def ReadLog(num_events=0):
 	event_list = []
 	event_line_length = len(event_lines)
 
-	if ((num_events == 0) or (num_events > event_line_length)):
-		# Get all events in file
-		for x in range(event_line_length):
-			event_list.append(event_lines[x].split(" ",2))
-		num_events = event_line_length
-	elif (num_events < event_line_length): 
-		# Get just the last num_events in list
-		for x in range(event_line_length-num_events, event_line_length):
-			event_list.append(event_lines[x].split(" ",2))
+	# Check if there are no events in the list
+	if (event_line_length == 0):
+		num_events = 0
+	else: 
+		if ((num_events == 0) or (num_events > event_line_length)):
+			# Get all events in file
+			for x in range(event_line_length):
+				event_list.append(event_lines[x].split(" ",2))
+			num_events = event_line_length
+		elif (num_events < event_line_length): 
+			# Get just the last num_events in list
+			for x in range(event_line_length-num_events, event_line_length):
+				event_list.append(event_lines[x].split(" ",2))
 
-	# Error handling if number of events is less than 10, fill array with empty
-	if (event_line_length < 10):
-		for line in range((10-num_events)):
-			event_list.append(["--------","--:--:--","---"])
-		num_events = 10
+		if (twentyfourhtime == False): 
+			for x in range(num_events):
+				convertedtime = datetime.strptime(event_list[x][1], "%H:%M:%S")  # Get 24 hour time from log
+				event_list[x][1] = convertedtime.strftime("%I:%M:%S %p") # Convert to 12 hour time for display
 
 	return(event_list, num_events)
 

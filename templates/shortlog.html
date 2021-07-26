@@ -8,22 +8,26 @@
         </tr>
       </thead>
       <tbody>
-        {% if settings['misc']['listorder'] == 'bottomup' %}
-        {% for row in range(10) %}
-        <tr>
-          {% for column in range(3) %}
-        <td> {{ door_history[(events-1-row)][column] }} </td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
+        {% if events > 0 %}
+          {% if settings['misc']['listorder'] == 'bottomup' %}
+            {% for row in range(events) %}
+            <tr>
+              {% for column in range(3) %}
+            <td> {{ door_history[(events-1-row)][column] }} </td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          {% else %}
+            {% for row in range(events) %}
+            <tr>
+              {% for column in range(3) %}
+            <td> {{ door_history[row][column] }} </td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          {% endif %}
         {% else %}
-        {% for row in range(10) %}
-        <tr>
-          {% for column in range(3) %}
-        <td> {{ door_history[(events-10+row)][column] }} </td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
+          <tr> <td>No Data Yet.</td> <td></td> <td></td> </tr>
         {% endif %}
       </tbody>
   </table>
