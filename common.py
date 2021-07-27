@@ -1,5 +1,5 @@
 import time
-from datetime import datetime
+import datetime
 import os
 import json
 
@@ -165,7 +165,7 @@ def ReadLog(num_events=0, twentyfourhtime=True):
 
 		if (twentyfourhtime == False): 
 			for x in range(num_events):
-				convertedtime = datetime.strptime(event_list[x][1], "%H:%M:%S")  # Get 24 hour time from log
+				convertedtime = datetime.datetime.strptime(event_list[x][1], "%H:%M:%S")  # Get 24 hour time from log
 				event_list[x][1] = convertedtime.strftime("%I:%M:%S %p") # Convert to 12 hour time for display
 
 	return(event_list, num_events)

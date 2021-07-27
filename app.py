@@ -43,6 +43,9 @@ def button():
 	states = ReadStates()
 	states['outputs']['button'] = True  		# Button pressed - Set state to 'on'
 	WriteStates(states)		# Write button press to file
+	ipaddress = request.remote_addr
+	event = 'Button Press from WebUI [' + ipaddress + ']'
+	WriteLog(event)
 	return redirect('/')
 
 @app.route('/history', methods=['POST','GET'])
