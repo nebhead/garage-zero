@@ -15,6 +15,8 @@ def DefaultSettings():
 		'theme': 'default',
 		'listorder': 'topdown', # default list order 'topdown' or 'bottomup'
 		'24htime': True, # default to 24hr time (commonly known as military time in the USA)
+		'doorname': 'Garage Door',
+		'id': get_unique_id()
 	}
 
 	settings['email'] = {
@@ -42,6 +44,11 @@ def DefaultSettings():
 		'APIKey': '', # API Key for Pushover notifications
 		'UserKeys': '', # Comma-separated list of user keys
 		'notify_on_open': "off",
+	}
+
+	settings['api_config'] = {
+		'apikey' : '',
+		'enable' : False
 	}
 
 	return settings
@@ -88,7 +95,7 @@ def WriteSettings(settings):
 	# *****************************************
 	# Write all control states to JSON file
 	# *****************************************
-	json_data_string = json.dumps(settings)
+	json_data_string = json.dumps(settings, indent=2, sort_keys=True)
 	with open("settings.json", 'w') as settings_file:
 	    settings_file.write(json_data_string)
 
@@ -114,7 +121,7 @@ def WriteStates(states):
 	# *****************************************
 	# Write all control states to JSON file
 	# *****************************************
-	json_data_string = json.dumps(states)
+	json_data_string = json.dumps(states, indent=2, sort_keys=True)
 	with open(states_file, 'w') as json_data_file:
 		json_data_file.write(json_data_string)
 		
@@ -183,3 +190,10 @@ def WriteLog(event):
 	logfile = open("events.log", "a")
 	logfile.write(now + ' ' + event + '\n')
 	logfile.close()
+
+def get_unique_id():
+	now = str(datetime.datetime.now())
+	now = now[0:19] # Truncate the microseconds
+
+	ID = ''.join(filter(str.isalnum, str(datetime.datetime.now())))
+	return(ID)

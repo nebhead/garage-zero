@@ -216,6 +216,32 @@
 </form>
 
 <br>
+<!-- API Settings Card -->
+<form name="apisettings" action="/admin/settings" method="POST">
+    <div class="card shadow">
+        <div class="card-header bg-info">
+            <i class="fas fa-server"></i>&nbsp; API Settings {% if settings['api_config']['enable'] %}<strong>[ENABLED]</strong>{% else %}[DISABLED]{% endif %}
+        </div>
+        <div class="card-body">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <button class="btn btn-outline-success" type="submit" id="gen_api" name="gen_api" value="true">Generate API Key</button>
+                </div>
+                <input type="text" class="form-control" id="apikey" value="{{ settings['api_config']['apikey'] }}" aria-label="apikey" aria-describedby="gen_api" readonly="readonly">
+              </div>
+              <button class="btn btn-outline-primary" type="button" id="copy_key"><i class="far fa-clipboard"></i> Copy Key to Clipboard</button><br>
+              <i><a href="/haexample" target="blank">Show example Home Assistant configuration YAML. </a> (Opens in a new window/tab)</i>
+        </div>
+        <div class="card-footer">
+            {% if settings['api_config']['enable'] %}
+            <button type="submit" class="btn btn-warning" id="enable_api" name="enable_api" value="false">Disable API</button>
+            {% else %}
+            <button type="submit" class="btn btn-success" id="enable_api" name="enable_api" value="true">Enable API</button>
+            {% endif %}
+
+        </div>
+    </div>
+</form><br>
 
 <!-- System Information Card -->
 <div class="card shadow">
@@ -332,4 +358,14 @@
 
 </div> <!-- End of Container -->
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+	$('#copy_key').click(function() {
+		$('#apikey').select();
+		document.execCommand("copy");
+        console.log('copied key')
+	});
+</script>
 {% endblock %}

@@ -1,0 +1,47 @@
+# Sensor garage_door
+sensor garage_door:
+  - platform: rest
+    scan_interval: 30
+    resource: {{ site_url_api }}
+    name: "Garage Door"
+    value_template: "{{ value_template }}"
+
+# Switch garage_door 
+switch garage_door:
+  - platform: rest
+    name: "Garage Door"
+    resource: {{ site_url_api }}
+    scan_interval: 30
+    body_on: '{"DoorButton" : "{{ doorname }}"}'
+    body_off: '{"DoorButton" : "{{ doorname }}"}'
+    is_on_template: "{{ value_template }}"
+    headers:
+      Content-Type: application/json
+    verify_ssl: false
+
+# Cover Template Example from:  https://www.home-assistant.io/integrations/cover.template/
+cover garagedoor:
+  - platform: template
+    covers:
+      garage_door:
+        device_class: garage
+        friendly_name: "Garage Door"
+        value_template: "{{ "{{ states('sensor.garage_door') }}" }}"
+        open_cover:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.garage_door
+        close_cover:
+          - service: switch.turn_off
+            target:
+              entity_id: switch.garage_door
+        stop_cover:
+          service: switch.turn_on
+          target:
+            entity_id: switch.garage_door
+        icon_template: >-
+          {{ "{% if states('sensor.garage_door') == 'open' %}" }}
+            mdi:garage-open
+          {{ "{% else %}" }}
+            mdi:garage
+          {{ "{% endif %}" }}

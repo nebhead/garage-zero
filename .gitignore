@@ -1,2 +1,12 @@
 
 __pycache__/
+
+settings.json
+
+*.code-workspace
+
+documents/images/FullSize/
+
+documents/images/hardware-0a.jpg
+
+events.log

@@ -1,7 +1,8 @@
-from flask import Flask, request, render_template, make_response, redirect
+from flask import Flask, request, render_template, make_response, redirect, abort, jsonify
 import time
 import datetime
 import os
+import secrets
 from common import *
 
 app = Flask(__name__)
@@ -174,6 +175,20 @@ def admin(action=None):
 			print(response['theme'])
 			settings['misc']['theme'] = response['theme']
 
+		if('enable_api' in response):
+			print(response['enable_api'])
+			if response['enable_api'] == 'true':
+				settings['api_config']['enable'] = True
+				if settings['api_config']['apikey'] == '':
+					settings['api_config']['apikey'] = gen_api_key(32)
+			else:
+				settings['api_config']['enable'] = False
+
+		if('gen_api' in response):
+			print(response['gen_api'])
+			if response['gen_api'] == 'true':
+				settings['api_config']['apikey'] = gen_api_key(32)
+
 		WriteSettings(settings)
 		event = "Settings Updated."
 		WriteLog(event)
@@ -189,6 +204,80 @@ def manifest():
     res = make_response(render_template('manifest.json'), 200)
     res.headers["Content-Type"] = "text/cache-manifest"
     return res
+
+@app.route('/api/<action>', methods=['POST','GET'])
+def api(action=None):
+	global settings 
+
+	apikey = settings['api_config']['apikey']
+	doorname = settings['misc']['doorname']
+
+	if (settings['api_config']['enable'] == True) and (apikey == action):
+		if (request.method == 'POST'):
+			if not request.json:
+				event = 'Local API Call Failed - Local API interface not enabled.'
+				WriteLog(event)
+				abort(400)
+			else:
+				if('DoorButton' in request.json):
+					states = ReadStates()
+					states['outputs']['button'] = True  		# Button pressed - Set state to 'on'
+					WriteStates(states)		# Write button press to file
+					event = f'Local API Call Success. Door button [{doorname}] pressed.'
+					WriteLog(event)
+					return jsonify({'result': 'success'}), 201
+			return jsonify({'result': 'failed'}), 201
+
+		if (request.method == 'GET'):
+			door_output = {}
+			door_output = {
+				doorname: {
+					'id': settings['misc']['id'],
+					'status': {
+						'limitsensorclosed': ''
+					}
+				}
+			}
+
+			states = ReadStates()
+			state=states['inputs']['switch']
+			
+			door_output[doorname]['status']['limitsensorclosed'] = 'open' if state == 1 else 'closed'
+		
+			event = 'Local API Call Success. [GET]'
+			WriteLog(event)
+			return jsonify(door_output), 201
+
+	event = 'Local API Call Failed.'	
+	WriteLog(event)
+
+	abort(404)
+
+@app.route('/haexample')
+def haexample():
+	global settings 
+
+	doorname = "Garage Door"
+
+	server_ip = request.environ['HTTP_HOST']
+	#print(request.environ)
+
+	site_url_api = f"http://{server_ip}/api/{settings['api_config']['apikey']}"
+	value_template = "{{ value_json['" + doorname + "']['status']['limitsensorclosed'] }}"
+	
+	resp = make_response(render_template('ha_example.yaml', site_url_api=site_url_api, value_template=value_template, doorname=doorname))
+	resp.mimetype = 'text/plain'
+	return resp
+
+"""
+Supporting Functions
+"""
+
+# Attribution to Vladimir Ignatyev on Stack Overflow
+# https://stackoverflow.com/questions/41969093/how-to-generate-passwords-in-python-2-and-python-3-securely
+def gen_api_key(length, charset="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"):
+    return "".join([secrets.choice(charset) for _ in range(0, length)])
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True) # use ,debug=True for debug mode
