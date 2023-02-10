@@ -39,9 +39,12 @@ cover garagedoor:
             target:
               entity_id: switch.garage_door
         stop_cover:
-          service: switch.turn_on
-          target:
-            entity_id: switch.garage_door
+          - service: >- 
+              {{ "{% if states('sensor.garage_door') == 'open' %}" }}
+                switch.turn_on
+              {{ "{% endif %}" }}
+            target:
+              entity_id: switch.garage_door
         icon_template: >-
           {{ "{% if states('sensor.garage_door') == 'open' %}" }}
             mdi:garage-open
