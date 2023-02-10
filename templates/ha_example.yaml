@@ -32,7 +32,10 @@ cover garagedoor:
             target:
               entity_id: switch.garage_door
         close_cover:
-          - service: switch.turn_off
+          - service: >- 
+              {{ "{% if states('sensor.garage_door') == 'open' %}" }}
+                switch.turn_off
+              {{ "{% endif %}" }}
             target:
               entity_id: switch.garage_door
         stop_cover:
